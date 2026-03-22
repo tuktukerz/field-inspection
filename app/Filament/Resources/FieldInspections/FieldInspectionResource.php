@@ -27,6 +27,10 @@ class FieldInspectionResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'document_number';
 
+    protected static ?string $navigationLabel = 'Data Inspeksi Lapangan';
+    protected static ?string $modelLabel = 'Inspeksi Lapangan';
+    protected static ?string $pluralModelLabel = 'Inspeksi Lapangan';
+
     public static function form(Schema $schema): Schema
     {
         return FieldInspectionForm::configure($schema);

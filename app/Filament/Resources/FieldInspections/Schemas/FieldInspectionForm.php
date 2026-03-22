@@ -327,15 +327,16 @@ class FieldInspectionForm
                             ->relationship('images')
                             ->schema([
                                 FileUpload::make('image_path')
-                                    ->label('Foto')
-                                    ->image()
-                                    ->disk('public')
-                                    ->directory('field-inspections')
-                                    ->visibility('public')
-                                    ->imagePreviewHeight('150')
-                                    ->formatStateUsing(fn ($state) => $state)
-                                    ->dehydrated(true)
-                                    ->required(),
+                                ->label('Foto')
+                                ->image()
+                                ->disk('public')
+                                ->directory('field-inspections')
+                                ->visibility('public')
+                                ->imagePreviewHeight('150')
+                                ->dehydrated(true)
+                                ->required()
+                                ->downloadable()
+                                ->openable(),
 
                                 TextInput::make('caption')
                                     ->label('Keterangan'),
