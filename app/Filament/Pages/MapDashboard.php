@@ -24,11 +24,14 @@ class MapDashboard extends Page
             ->get()
             ->map(fn ($item) => [
                 'id' => $item->id,
-                'nama' => $item->location_name,
+                'tanggal' => \Carbon\Carbon::parse($item->inspection_date)->isoFormat('D MMMM YYYY'),
+                'lokasi' => $item->location_name,
+                'detail' => $item->location_detail,
+                'kecamatan' => $item->kecamatan,
+                'kelurahan' => $item->kelurahan,
+                'letak' => strtoupper($item->location_type),
                 'latitude' => $item->latitude,
                 'longitude' => $item->longitude,
-                'kelurahan' => $item->kelurahan,
-                'kecamatan' => $item->kecamatan,
                 'foto' => $item->images->first()?->image_path,
             ])
             ->values();

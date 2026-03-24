@@ -3,8 +3,28 @@
     {{-- Leaflet CSS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
+    {{-- Custom CSS for Map Responsiveness and Layering --}}
+    <style>
+        #map {
+            height: 400px;
+            z-index: 0 !important;
+            border-radius: 12px;
+        }
+        @media (min-width: 768px) {
+            #map {
+                height: 600px;
+            }
+        }
+        /* Ensure Leaflet controls don't override Filament headers if necessary */
+        .leaflet-top, .leaflet-bottom {
+            z-index: 400 !important;
+        }
+    </style>
+
     {{-- Map --}}
-    <div id="map" style="height: 600px; border-radius: 12px;"></div>
+    <div class="w-full">
+        <div id="map"></div>
+    </div>
 
     {{-- Ambil data --}}
     @php
@@ -59,9 +79,18 @@
                 }
 
                 const popupContent = `
-                    <div style="min-width:200px">
-                        <b>${item.nama ?? '-'}</b><br/>
-                        ${item.kelurahan ?? '-'}, ${item.kecamatan ?? '-'}
+                    <div style="min-width:250px; font-family: Arial, sans-serif;">
+                        <h3 style="margin: 0 0 10px 0; color: #1a56db; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Informasi Menara</h3>
+                        <table style="width: 100%; font-size: 11px; border-collapse: collapse;">
+                            <tr><td style="padding: 2px 0; color: #666;">TGL PENGISIAN</td><td style="padding: 2px 0; font-weight: bold;">: ${item.tanggal ?? '-'}</td></tr>
+                            <tr><td style="padding: 2px 0; color: #666;">LOKASI</td><td style="padding: 2px 0; font-weight: bold;">: ${item.lokasi ?? '-'}</td></tr>
+                            <tr><td style="padding: 2px 0; color: #666;">DETAIL</td><td style="padding: 2px 0;">: ${item.detail ?? '-'}</td></tr>
+                            <tr><td style="padding: 2px 0; color: #666;">KECAMATAN</td><td style="padding: 2px 0;">: ${item.kecamatan ?? '-'}</td></tr>
+                            <tr><td style="padding: 2px 0; color: #666;">KELURAHAN</td><td style="padding: 2px 0;">: ${item.kelurahan ?? '-'}</td></tr>
+                            <tr><td style="padding: 2px 0; color: #666;">LETAK TITIK</td><td style="padding: 2px 0;">: ${item.letak ?? '-'}</td></tr>
+                            <tr><td style="padding: 2px 0; color: #666;">LATITUDE</td><td style="padding: 2px 0;">: ${item.latitude ?? '-'}</td></tr>
+                            <tr><td style="padding: 2px 0; color: #666;">LONGITUDE</td><td style="padding: 2px 0;">: ${item.longitude ?? '-'}</td></tr>
+                        </table>
                         ${imageHtml}
                     </div>
                 `;
