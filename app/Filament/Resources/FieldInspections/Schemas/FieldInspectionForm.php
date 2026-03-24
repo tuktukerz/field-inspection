@@ -10,6 +10,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use App\Models\District;
+use App\Models\SubDistrict;
+use App\Models\FieldInspection;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 
@@ -30,7 +35,42 @@ class FieldInspectionForm
                 // =========================
                 Section::make('Data Lapangan')
                     ->schema([
+                        Select::make('revisit_from_inspection')
+                            ->label('Pilih dari Inspeksi Sebelumnya (untuk kunjungan ulang)')
+                            ->placeholder('Cari berdasarkan nama lokasi atau nomor dokumen...')
+                            ->searchable()
+                            ->getSearchResultsUsing(fn (string $search): array => 
+                                FieldInspection::where('location_name', 'like', "%{$search}%")
+                                    ->orWhere('document_number', 'like', "%{$search}%")
+                                    ->limit(10)
+                                    ->get(['id', 'location_name', 'document_number'])
+                                    ->mapWithKeys(fn ($item) => [$item->id => "{$item->location_name} ({$item->document_number})"])
+                                    ->toArray()
+                            )
+                            ->getOptionLabelUsing(fn ($value): ?string => FieldInspection::find($value)?->location_name)
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                if (!$state) return;
+                                
+                                $previous = FieldInspection::find($state);
+                                if (!$previous) return;
+
+                                // Pre-fill tower metadata
+                                $set('location_name', $previous->location_name);
+                                $set('location_detail', $previous->location_detail);
+                                $set('kelurahan', $previous->kelurahan);
+                                $set('kecamatan', $previous->kecamatan);
+                                $set('latitude', $previous->latitude);
+                                $set('longitude', $previous->longitude);
+                                $set('location_type', $previous->location_type);
+                                $set('tower_type', $previous->tower_type);
+                                $set('observation_distance', $previous->observation_distance);
+                            })
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
                         DatePicker::make('inspection_date')
+                            ->label('Tanggal Inspeksi')
                             ->required(),
 
                         TextInput::make('location_name')
@@ -39,10 +79,26 @@ class FieldInspectionForm
 
                         Textarea::make('location_detail')
                             ->label('Lokasi Detail')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->required(),
 
-                        TextInput::make('kelurahan'),
-                        TextInput::make('kecamatan'),
+                        Select::make('kecamatan')
+                            ->label('Kecamatan')
+                            ->options(District::all()->pluck('name', 'name'))
+                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(fn (Set $set) => $set('kelurahan', null))
+                            ->required(),
+
+                        Select::make('kelurahan')
+                            ->label('Kelurahan')
+                            ->options(fn (Get $get): array => 
+                                SubDistrict::whereHas('district', fn ($query) => $query->where('name', $get('kecamatan')))
+                                    ->pluck('name', 'name')
+                                    ->toArray()
+                            )
+                            ->searchable()
+                            ->required(),
 
                         Section::make('Lokasi')
                             ->schema([
@@ -55,12 +111,16 @@ class FieldInspectionForm
                                         'manual' => 'Input Manual',
                                     ])
                                     ->default('manual')
+                                    ->afterStateUpdated(function (Set $set) {
+                                        $set('latitude', null);
+                                        $set('longitude', null);
+                                    })
                                     ->live(),
 
                                 // 🔹 BUTTON GPS
                                 Placeholder::make('gps_button')
-                                    ->visible(fn ($get) => $get('location_mode') === 'gps')
-                                    ->content(new HtmlString('
+                                    ->visible(fn (Get $get) => $get('location_mode') === 'gps')
+                                    ->content(new HtmlString(<<<HTML
                                         <button
                                             type="button"
                                             style="padding:10px 16px;background:#3b82f6;color:white;border-radius:8px;width:100%;"
@@ -69,33 +129,32 @@ class FieldInspectionForm
                                                     navigator.geolocation.getCurrentPosition(
                                                         (position) => {
                                                             const lw = window.Livewire.find(
-                                                                document.querySelector(\'[wire\\:id]\').getAttribute(\'wire:id\')
+                                                                this.closest('[wire\\\\:id]').getAttribute('wire:id')
                                                             );
 
-                                                            lw.set(\'data.latitude\', position.coords.latitude);
-                                                            lw.set(\'data.longitude\', position.coords.longitude);
+                                                            lw.set('data.latitude', String(position.coords.latitude));
+                                                            lw.set('data.longitude', String(position.coords.longitude));
                                                         },
                                                         (error) => {
-                                                            alert(\'Gagal ambil lokasi: \' + error.message);
+                                                            alert('Gagal ambil lokasi: ' + error.message);
                                                         }
                                                     );
                                                 } else {
-                                                    alert(\'Browser tidak support GPS\');
+                                                    alert('Browser tidak support GPS');
                                                 }
                                             "
                                         >
                                             Ambil Lokasi dari GPS 📍
                                         </button>
-                                    '))
+                                    HTML))
                                     ->columnSpanFull(),
 
                                 // 🔹 LATITUDE
                                 TextInput::make('latitude')
                                     ->label('Latitude')
-                                    ->numeric()
                                     ->placeholder('-6.200000')
-                                    ->readOnly(fn ($get) => $get('location_mode') === 'gps')
-                                    ->helperText(fn ($get) =>
+                                    ->readOnly(fn (Get $get) => $get('location_mode') === 'gps')
+                                    ->helperText(fn (Get $get) =>
                                     $get('location_mode') === 'gps'
                                         ? 'Akan terisi otomatis dari GPS'
                                         : 'Isi manual koordinat latitude'
@@ -105,10 +164,9 @@ class FieldInspectionForm
                                 // 🔹 LONGITUDE
                                 TextInput::make('longitude')
                                     ->label('Longitude')
-                                    ->numeric()
                                     ->placeholder('106.816666')
-                                    ->readOnly(fn ($get) => $get('location_mode') === 'gps')
-                                    ->helperText(fn ($get) =>
+                                    ->readOnly(fn (Get $get) => $get('location_mode') === 'gps')
+                                    ->helperText(fn (Get $get) =>
                                     $get('location_mode') === 'gps'
                                         ? 'Akan terisi otomatis dari GPS'
                                         : 'Isi manual koordinat longitude'
@@ -128,7 +186,8 @@ class FieldInspectionForm
                                 'pedestrian' => 'Pedestrian',
                                 'rth' => 'RTH',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         Radio::make('tower_type')
                             ->label('Jenis Menara')
@@ -136,11 +195,13 @@ class FieldInspectionForm
                                 'pole' => 'Pole',
                                 'rangka' => 'Rangka',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         TextInput::make('observation_distance')
                             ->label('Jarak Pengamatan (m)')
-                            ->numeric(),
+                            ->numeric()
+                            ->required(),
                     ])
                     ->columns(2),
 
@@ -157,7 +218,8 @@ class FieldInspectionForm
                                 'lengkap' => 'Lengkap',
                                 'tidak_terlihat' => 'Tidak Terlihat',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         Radio::make('bolt_condition')
                             ->label('Kondisi Mur/Baut Pengait')
@@ -166,7 +228,8 @@ class FieldInspectionForm
                                 'tidak_berkarat' => 'Tidak Berkarat',
                                 'tidak_terlihat' => 'Tidak Terlihat',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         Radio::make('bolt_position')
                             ->label('Posisi Pasangan Mur/Baut Pengait')
@@ -175,7 +238,8 @@ class FieldInspectionForm
                                 'tidak_longgar' => 'Tidak Longgar',
                                 'tidak_terlihat' => 'Tidak Terlihat',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
                     ]),
 
                 // =========================
@@ -191,34 +255,38 @@ class FieldInspectionForm
                                 'miring' => 'Miring',
                                 'tegak' => 'Tegak',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         // 🔹 Maintenance
                         Radio::make('frame_maintenance')
-                            ->label('----------------------------------------------------------------------------------')
+                            ->hiddenLabel()
                             ->options([
                                 'not_maintained' => 'Tidak Terpelihara (tidak dicat)',
                                 'maintained' => 'Terpelihara (dicat)',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         // 🔹 Rust
                         Radio::make('frame_rust')
-                            ->label('----------------------------------------------------------------------------------')
+                            ->hiddenLabel()
                             ->options([
                                 'rusted' => 'Berkarat',
                                 'not_rusted' => 'Tidak Berkarat',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         // 🔹 Porous
                         Radio::make('frame_porous')
-                            ->label('----------------------------------------------------------------------------------')
+                            ->hiddenLabel()
                             ->options([
                                 'porous' => 'Keropos',
                                 'not_porous' => 'Tidak Keropos',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         // 🔹 Joint Maintenance
                         Radio::make('joint_maintenance')
@@ -228,27 +296,30 @@ class FieldInspectionForm
                                 'maintained' => 'Terpelihara (dicat)',
                                 'not_visible' => 'Tidak Terlihat',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         // 🔹 Joint Rust
                         Radio::make('joint_rust')
-                            ->label('----------------------------------------------------------------------------------')
+                            ->hiddenLabel()
                             ->options([
                                 'rusted' => 'Berkarat',
                                 'not_rusted' => 'Tidak Berkarat',
                                 'not_visible' => 'Tidak Terlihat',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         // 🔹 Joint Porous
                         Radio::make('joint_porous')
-                            ->label('----------------------------------------------------------------------------------')
+                            ->hiddenLabel()
                             ->options([
                                 'porous' => 'Keropos',
                                 'not_porous' => 'Tidak Keropos',
                                 'not_visible' => 'Tidak Terlihat',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                     ])
                     ->columns(1),
@@ -265,7 +336,8 @@ class FieldInspectionForm
                                 'not_connected_well' => 'Tidak Tersambung Baik Pada Pada Tiang Utama',
                                 'connected_well' => 'Tersambung Baik Pada Tiang Utama',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         Radio::make('panel_status')
                             ->label('Bidang Panel')
@@ -274,7 +346,8 @@ class FieldInspectionForm
                                 'no_loose' => 'Tidak Ada Lepas',
                                 'no_panel' => 'Tidak Ada Bidang Panel',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         Radio::make('lamp_frame')
                             ->label('Rangka Lampu')
@@ -283,7 +356,8 @@ class FieldInspectionForm
                                 'connected_well' => 'Tersambung Dengan Baik Pada Struktur Panel',
                                 'no_lamp' => 'Tidak Ada Lampu',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
                     ]),
 
                 // =========================
@@ -307,7 +381,8 @@ class FieldInspectionForm
                                 'dangerous' => 'Berpotensi Membahayakan',
                                 'not_dangerous' => 'Tidak Membahayakan',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
 
                         Radio::make('follow_up_action')
                             ->label('Tindak lanjut')
@@ -315,7 +390,8 @@ class FieldInspectionForm
                                 'enforcement_proposal' => 'Penertiban',
                                 'periodic_monitoring' => 'Monitoring',
                             ])
-                            ->inline(),
+                            ->inline()
+                            ->required(),
                     ]),
 
                 // =========================
@@ -325,6 +401,7 @@ class FieldInspectionForm
                     ->schema([
                         Repeater::make('images')
                             ->relationship('images')
+                            ->required()
                             ->schema([
                                 FileUpload::make('image_path')
                                 ->label('Foto')
