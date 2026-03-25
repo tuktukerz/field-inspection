@@ -3,18 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class FieldInspection extends Model
+class Visit extends Model
 {
+    public static function booted()
+    {
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->created_by = auth()->id();
+            }
+        });
+    }
+
     protected $fillable = [
-        'document_number',
+        'tower_id',
         'inspection_date',
-        'location_name',
-        'location_detail',
-        'kelurahan',
-        'kecamatan',
-        'latitude',
-        'longitude',
         'location_type',
         'observation_distance',
         'tower_type',
@@ -42,25 +47,18 @@ class FieldInspection extends Model
         'created_by',
     ];
 
-    public function images()
+    public function tower(): BelongsTo
     {
-        return $this->hasMany(FieldInspectionImage::class);
+        return $this->belongsTo(Tower::class);
     }
 
-    public function creator()
+    public function images(): HasMany
+    {
+        return $this->hasMany(VisitImage::class);
+    }
+
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public static function booted()
-    {
-        static::creating(function ($model) {
-
-            $date = now()->format('Ymd');
-
-            $count = self::whereDate('created_at', now())->count() + 1;
-
-            $model->document_number = 'FI-' . $date . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
-        });
     }
 }

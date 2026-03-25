@@ -2,36 +2,51 @@
 
 namespace App\Exports;
 
-use App\Models\FieldInspection;
+use App\Models\Visit;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class FieldInspectionsExport implements FromQuery, WithHeadings, WithMapping
+class VisitsExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
     protected $startDate;
     protected $endDate;
+    protected $towerId;
+    protected $userId;
 
-    public function __construct($startDate, $endDate)
+    public function __construct($startDate, $endDate, $towerId = null, $userId = null)
     {
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->towerId = $towerId;
+        $this->userId = $userId;
     }
 
     public function query()
     {
-        return FieldInspection::query()
-            ->whereBetween('inspection_date', [$this->startDate, $this->endDate])
-            ->orderBy('inspection_date', 'asc');
+        $query = Visit::query()
+            ->with(['tower', 'creator'])
+            ->whereBetween('inspection_date', [$this->startDate, $this->endDate]);
+
+        if ($this->towerId) {
+            $query->where('tower_id', $this->towerId);
+        }
+
+        if ($this->userId) {
+            $query->where('created_by', $this->userId);
+        }
+
+        return $query->orderBy('inspection_date', 'asc');
     }
 
     public function headings(): array
     {
         return [
             'No',
+            'Tower ID',
             'Tanggal',
             'Lokasi',
             'Kelurahan',
@@ -46,6 +61,7 @@ class FieldInspectionsExport implements FromQuery, WithHeadings, WithMapping
             'Rangka Lampu',
             'Latitude',
             'Longitude',
+            'Pemeriksa',
         ];
     }
 
@@ -54,11 +70,14 @@ class FieldInspectionsExport implements FromQuery, WithHeadings, WithMapping
         static $no = 0;
         $no++;
 
+        $tower = $item->tower;
+
         return [
             $no,
+            $tower?->tower_id ?? '-',
             $item->inspection_date,
-            $item->location_name . ($item->location_detail ? " ({$item->location_detail})" : ""),
-            $item->kelurahan,
+            ($tower?->location_name ?? '-') . ($tower?->location_detail ? " ({$tower->location_detail})" : ""),
+            $tower?->kelurahan ?? '-',
             strtoupper($item->location_type),
             $this->formatLabel($item->bolt_count),
             $this->formatLabel($item->bolt_condition),
@@ -68,8 +87,9 @@ class FieldInspectionsExport implements FromQuery, WithHeadings, WithMapping
             $item->panel_structure === 'connected_well' ? 'Tersambung Baik' : 'Tidak Tersambung Baik',
             $this->formatPanelStatus($item->panel_status),
             $this->formatLampFrame($item->lamp_frame),
-            is_numeric($item->latitude) ? number_format((float)$item->latitude, 6, '.', '') : $item->latitude,
-            is_numeric($item->longitude) ? number_format((float)$item->longitude, 6, '.', '') : $item->longitude,
+            is_numeric($tower?->latitude ?? null) ? (str_starts_with($tower->latitude, '-') ? number_format((float)$tower->latitude, 6, '.', '') : '-' . number_format((float)$tower->latitude, 6, '.', '')) : ($tower?->latitude ?? '-'),
+            is_numeric($tower?->longitude ?? null) ? number_format((float)$tower->longitude, 6, '.', '') : ($tower?->longitude ?? '-'),
+            $item->creator?->name ?? 'System',
         ];
     }
 
@@ -89,7 +109,7 @@ class FieldInspectionsExport implements FromQuery, WithHeadings, WithMapping
     private function formatFrame($item)
     {
         $cond = $item->frame_condition === 'tegak' ? 'Tegak' : 'Miring';
-        $maint = $item->frame_maintenance === 'maintained' ? 'Terpelihara' : 'Tidak Terpelihara';
+        $maint = $item->frame_maintenance === 'maintained' ? 'Terpelihara (dicat)' : 'Tidak Terpelihara (tidak dicat)';
         $rust = $item->frame_rust === 'rusted' ? 'Berkarat' : 'Tidak Berkarat';
         $porous = $item->frame_porous === 'porous' ? 'Keropos' : 'Tidak Keropos';
         return "{$cond}, {$maint}, {$rust}, {$porous}";
@@ -98,8 +118,8 @@ class FieldInspectionsExport implements FromQuery, WithHeadings, WithMapping
     private function formatJoint($item)
     {
         $maint = match($item->joint_maintenance) {
-            'maintained' => 'Terpelihara',
-            'not_maintained' => 'Tidak Terpelihara',
+            'maintained' => 'Terpelihara (dicat)',
+            'not_maintained' => 'Tidak Terpelihara (tidak dicat)',
             default => 'Tidak Terlihat',
         };
         $rust = match($item->joint_rust) {

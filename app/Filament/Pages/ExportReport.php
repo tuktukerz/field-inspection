@@ -2,10 +2,13 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\FieldInspection;
+use App\Models\Visit;
+use App\Models\Tower;
+use App\Models\User;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
@@ -15,7 +18,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 
-use App\Exports\FieldInspectionsExport;
+use App\Exports\VisitsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ExportReport extends Page implements HasForms
@@ -84,8 +87,18 @@ class ExportReport extends Page implements HasForms
                             ->required()
                             ->visible(fn ($get) => $get('date_range') === 'custom')
                             ->default(now()),
+                        Select::make('tower_id')
+                            ->label('Tower ID')
+                            ->options(Tower::all()->pluck('tower_id', 'id'))
+                            ->searchable()
+                            ->placeholder('Semua Tower'),
+                        Select::make('user_id')
+                            ->label('Pemeriksa (Visited By)')
+                            ->options(User::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->placeholder('Semua Pemeriksa'),
                     ])
-                    ->columns(3),
+                    ->columns(2),
             ])
             ->statePath('data');
     }
@@ -96,32 +109,49 @@ class ExportReport extends Page implements HasForms
             Action::make('downloadPdf')
                 ->label('Unduh PDF')
                 ->icon('heroicon-o-document-arrow-down')
-                ->action('downloadPdf'),
+                ->action(fn() => $this->downloadPdf()),
             Action::make('downloadExcel')
                 ->label('Unduh XLS')
                 ->icon('heroicon-o-table-cells')
                 ->color('success')
-                ->action('downloadExcel'),
+                ->action(fn() => $this->downloadExcel()),
         ];
     }
 
     public function downloadPdf()
     {
-        $startDate = $this->data['start_date'] ?? null;
-        $endDate = $this->data['end_date'] ?? null;
+        $towerId = $this->data['tower_id'] ?? null;
+        $userId = $this->data['user_id'] ?? null;
 
         if (!$startDate || !$endDate) {
-            $this->addError('data.start_date', 'Silakan pilih rentang tanggal.');
+            \Filament\Notifications\Notification::make()
+                ->title('Pilih rentang tanggal')
+                ->danger()
+                ->send();
             return;
         }
 
-        $inspections = FieldInspection::with(['images', 'creator'])
-            ->whereBetween('inspection_date', [$startDate, $endDate])
+        $query = Visit::with(['images', 'creator', 'tower'])
+            ->whereBetween('inspection_date', [$startDate, $endDate]);
+
+        if ($towerId) {
+            $query->where('tower_id', $towerId);
+        }
+
+        if ($userId) {
+            $query->where('created_by', $userId);
+        }
+
+        $visits = $query->orderBy('tower_id', 'asc')
             ->orderBy('inspection_date', 'asc')
             ->get();
 
-        if ($inspections->isEmpty()) {
-            $this->addError('data.start_date', 'Tidak ada data ditemukan untuk rentang tanggal ini.');
+        if ($visits->isEmpty()) {
+            \Filament\Notifications\Notification::make()
+                ->title('Data tidak ditemukan')
+                ->body('Tidak ada data ditemukan untuk rentang tanggal ini.')
+                ->warning()
+                ->send();
             return;
         }
 
@@ -132,7 +162,7 @@ class ExportReport extends Page implements HasForms
         $tahun = $dateObj->year;
 
         $pdf = Pdf::loadView('reports.telecom-tower', [
-            'inspections' => $inspections,
+            'inspections' => $visits,
             'startDate' => $dateObj->isoFormat('D MMMM YYYY'),
             'endDate' => Carbon::parse($endDate)->isoFormat('D MMMM YYYY'),
             'triwulan' => $triwulanNum,
@@ -148,16 +178,19 @@ class ExportReport extends Page implements HasForms
 
     public function downloadExcel()
     {
-        $startDate = $this->data['start_date'] ?? null;
-        $endDate = $this->data['end_date'] ?? null;
+        $towerId = $this->data['tower_id'] ?? null;
+        $userId = $this->data['user_id'] ?? null;
 
         if (!$startDate || !$endDate) {
-            $this->addError('data.start_date', 'Silakan pilih rentang tanggal.');
+            \Filament\Notifications\Notification::make()
+                ->title('Pilih rentang tanggal')
+                ->danger()
+                ->send();
             return;
         }
 
         return Excel::download(
-            new FieldInspectionsExport($startDate, $endDate),
+            new VisitsExport($startDate, $endDate, $towerId, $userId),
             "Laporan_Menara_Telekomunikasi_{$startDate}_{$endDate}.xlsx"
         );
     }

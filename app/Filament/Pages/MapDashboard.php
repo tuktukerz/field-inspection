@@ -3,13 +3,11 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use App\Models\FieldInspection;
+use App\Models\Tower;
 
 class MapDashboard extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
-
-//    protected static string|\BackedEnum|null $navigationLabel = 'Peta Persebaran';
 
     public function getTitle(): string
     {
@@ -20,20 +18,47 @@ class MapDashboard extends Page
 
     public function getMapData()
     {
-        return FieldInspection::with('images')
+        return Tower::with([
+            'visits' => fn($q) => $q->latest()->limit(3), 
+            'visits.creator', 
+            'visits.images'
+        ])
             ->get()
-            ->map(fn ($item) => [
-                'id' => $item->id,
-                'tanggal' => \Carbon\Carbon::parse($item->inspection_date)->isoFormat('D MMMM YYYY'),
-                'lokasi' => $item->location_name,
-                'detail' => $item->location_detail,
-                'kecamatan' => $item->kecamatan,
-                'kelurahan' => $item->kelurahan,
-                'letak' => strtoupper($item->location_type),
-                'latitude' => $item->latitude,
-                'longitude' => $item->longitude,
-                'fotos' => $item->images->pluck('image_path')->toArray(),
-            ])
+            ->map(function ($item) {
+                $visits = $item->visits;
+                $latestVisit = $visits->first();
+                
+                // Calculate Status Color
+                $statusColor = 'red'; // Default: never inspected
+                if ($latestVisit) {
+                    $daysSinceVisit = \Carbon\Carbon::parse($latestVisit->inspection_date)->diffInDays(now());
+                    
+                    if ($daysSinceVisit <= 30) {
+                        $statusColor = 'green';
+                    } elseif ($daysSinceVisit <= 90) {
+                        $statusColor = 'yellow';
+                    }
+                }
+
+                return [
+                    'id' => $item->id,
+                    'tower_id' => $item->tower_id,
+                    'lokasi' => $item->location_name,
+                    'detail' => $item->location_detail,
+                    'kecamatan' => $item->kecamatan,
+                    'kelurahan' => $item->kelurahan,
+                    'latitude' => $item->latitude,
+                    'longitude' => $item->longitude,
+                    'status_color' => $statusColor,
+                    // Riwayat 3 terakhir
+                    'history' => $visits->map(fn($v) => [
+                        'tanggal' => \Carbon\Carbon::parse($v->inspection_date)->isoFormat('D MMMM YYYY'),
+                        'visitor' => $v->creator?->name ?? 'Unknown',
+                    ])->toArray(),
+                    // Foto dari kunjungan terakhir (3 saja)
+                    'latest_fotos' => $latestVisit ? $latestVisit->images->take(3)->pluck('image_path')->toArray() : [],
+                ];
+            })
             ->values();
     }
 }
