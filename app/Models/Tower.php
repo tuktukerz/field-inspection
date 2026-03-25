@@ -46,5 +46,9 @@ class Tower extends Model
                 $model->created_by = auth()->id();
             }
         });
+
+        static::deleting(function ($tower) {
+            $tower->visits()->each(fn($visit) => $visit->delete());
+        });
     }
 }

@@ -15,6 +15,10 @@ class Visit extends Model
                 $model->created_by = auth()->id();
             }
         });
+
+        static::deleting(function ($visit) {
+            $visit->images()->each(fn($image) => $image->delete());
+        });
     }
 
     protected $fillable = [
