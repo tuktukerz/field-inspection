@@ -35,9 +35,9 @@ class ExportReport extends Page implements HasForms
     public function mount(): void
     {
         $this->form->fill([
-            'date_range' => 'custom',
+            'date_range' => 'this_month',
             'start_date' => now()->startOfMonth()->format('Y-m-d'),
-            'end_date' => now()->format('Y-m-d'),
+            'end_date' => now()->endOfMonth()->format('Y-m-d'),
         ]);
     }
 
@@ -56,6 +56,7 @@ class ExportReport extends Page implements HasForms
                                 'last_year' => 'Tahun kemarin',
                                 'custom' => 'Custom',
                             ])
+                            ->default('this_month')
                             ->live()
                             ->afterStateUpdated(function ($state, $set) {
                                 switch ($state) {
@@ -88,10 +89,10 @@ class ExportReport extends Page implements HasForms
                             ->visible(fn ($get) => $get('date_range') === 'custom')
                             ->default(now()),
                         Select::make('tower_id')
-                            ->label('Tower ID')
+                            ->label('ID Menara')
                             ->options(Tower::all()->pluck('tower_id', 'id'))
                             ->searchable()
-                            ->placeholder('Semua Tower'),
+                            ->placeholder('Semua Menara'),
                         Select::make('user_id')
                             ->label('Pemeriksa (Visited By)')
                             ->options(User::all()->pluck('name', 'id'))
@@ -122,6 +123,8 @@ class ExportReport extends Page implements HasForms
     {
         $towerId = $this->data['tower_id'] ?? null;
         $userId = $this->data['user_id'] ?? null;
+        $startDate = $this->data['start_date'] ?? null;
+        $endDate = $this->data['end_date'] ?? null;
 
         if (!$startDate || !$endDate) {
             \Filament\Notifications\Notification::make()
@@ -180,6 +183,8 @@ class ExportReport extends Page implements HasForms
     {
         $towerId = $this->data['tower_id'] ?? null;
         $userId = $this->data['user_id'] ?? null;
+        $startDate = $this->data['start_date'] ?? null;
+        $endDate = $this->data['end_date'] ?? null;
 
         if (!$startDate || !$endDate) {
             \Filament\Notifications\Notification::make()

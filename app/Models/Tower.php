@@ -39,7 +39,7 @@ class Tower extends Model
             if (!$model->tower_id) {
                 $date = now()->format('Ymd');
                 $count = self::whereDate('created_at', now())->count() + 1;
-                $model->tower_id = 'TWR-' . $date . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
+                $model->tower_id = 'MNR-' . $date . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
             }
 
             if (auth()->check()) {

@@ -12,7 +12,7 @@ class TowersTable
         return $table
             ->columns([
                 TextColumn::make('tower_id')
-                    ->label('ID Tower')
+                    ->label('ID Menara')
                     ->copyable()
                     ->searchable()
                     ->sortable(),
@@ -48,7 +48,7 @@ class TowersTable
                 ->color('gray')
                 ->button()
                 ->alpineClickHandler(fn ($record) => "
-                    const text = `TOWER ID : {$record->tower_id}\\nLOKASI : {$record->location_name}\\nDETAIL : {$record->location_detail}\\nKECAMATAN : {$record->kecamatan}\\nKELURAHAN : {$record->kelurahan}\\nLATITUDE : {$record->latitude}\\nLONGITUDE : {$record->longitude}\\nGOOGLE MAPS : https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}`;
+                    const text = `ID MENARA : {$record->tower_id}\\nLOKASI MENARA : {$record->location_name}\\nDETAIL : {$record->location_detail}\\nKECAMATAN : {$record->kecamatan}\\nKELURAHAN : {$record->kelurahan}\\nLATITUDE : {$record->latitude}\\nLONGITUDE : {$record->longitude}\\nGOOGLE MAPS : https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}`;
                     window.navigator.clipboard.writeText(text);
                     new FilamentNotification()
                         .title('Info berhasil disalin!')

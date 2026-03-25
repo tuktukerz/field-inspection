@@ -27,6 +27,9 @@ class TowerResource extends Resource
     protected static ?string $model = Tower::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+    protected static ?string $navigationLabel = 'Menara';
+    protected static ?string $pluralLabel = 'Menara';
+    protected static ?string $modelLabel = 'Menara';
 
     protected static ?string $recordTitleAttribute = 'location_name';
 

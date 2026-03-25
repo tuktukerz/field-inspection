@@ -63,7 +63,7 @@
         <thead>
             <tr>
                 <th rowspan="2" class="no-col">No</th>
-                <th rowspan="2" style="width: 70px;">Tower ID</th>
+                <th rowspan="2" style="width: 70px;">ID Menara</th>
                 <th rowspan="2" style="width: 100px;">Lokasi</th>
                 <th rowspan="2" style="width: 80px;">Wilayah</th>
                 <th rowspan="2" style="width: 120px;">Koordinat</th>

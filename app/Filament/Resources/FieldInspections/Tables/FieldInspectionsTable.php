@@ -35,14 +35,25 @@ class FieldInspectionsTable
                     ->date()
                     ->sortable(),
 
+                // 🔹 LOKASI
+                TextColumn::make('tower.location_name')
+                    ->label('Lokasi Menara')
+                    ->description(fn($record) => $record->tower->location_detail)
+                    ->searchable()
+                    ->sortable(),
+
                 // 🔹 KELURAHAN
                 TextColumn::make('kelurahan')
                     ->label('Kelurahan')
+                    ->badge()
+                    ->color('gray')
                     ->searchable(),
 
                 // 🔹 KECAMATAN
                 TextColumn::make('kecamatan')
                     ->label('Kecamatan')
+                    ->badge()
+                    ->color('info')
                     ->searchable(),
 
                 // 🔹 DIBUAT OLEH
@@ -62,49 +73,28 @@ class FieldInspectionsTable
                 //
             ])
             ->actions([
-                Action::make('copy_info')
-                    ->label('Salin Info')
-                    ->icon('heroicon-o-clipboard-document')
-                    ->color('info')
+                Action::make('salin_data')
+                    ->label('Salin Data')
+                    ->icon('heroicon-m-clipboard-document-list')
+                    ->color('gray')
+                    ->button()
                     ->alpineClickHandler(fn ($record) => "
-                        const copyText = atob('" . base64_encode(
-                            "LOKASI\t: {$record->location_name}\n" .
-                            "DETAIL\t: {$record->location_detail}\n" .
-                            "KECAMATAN\t: {$record->kecamatan}\n" .
-                            "KELURAHAN\t: {$record->kelurahan}\n" .
-                            "LATITUDE\t: {$record->latitude}\n" .
-                            "LONGITUDE\t: {$record->longitude}\n" .
-                            "GOOGLE MAPS\t: https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}"
-                        ) . "');
-                        
-                        if (navigator.clipboard && window.isSecureContext) {
-                            navigator.clipboard.writeText(copyText).then(() => {
-                                alert('Info berhasil disalin ke clipboard!');
-                            }).catch(err => {
-                                alert('Gagal salin: ' + err);
-                            });
-                        } else {
-                            const textArea = document.createElement('textarea');
-                            textArea.value = copyText;
-                            document.body.appendChild(textArea);
-                            textArea.select();
-                            try {
-                                document.execCommand('copy');
-                                alert('Info berhasil disalin ke clipboard (Fallback)!');
-                            } catch (err) {
-                                alert('Gagal salin total!');
-                            }
-                            document.body.removeChild(textArea);
-                        }
+                        const text = `ID MENARA : {$record->tower?->tower_id}\\nLOKASI MENARA : {$record->tower?->location_name}\\nDETAIL : {$record->tower?->location_detail}\\nKECAMATAN : {$record->kecamatan}\\nKELURAHAN : {$record->kelurahan}\\nLATITUDE : {$record->latitude}\\nLONGITUDE : {$record->longitude}\\nGOOGLE MAPS : https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}`;
+                        window.navigator.clipboard.writeText(text);
+                        new FilamentNotification()
+                            .title('Info berhasil disalin!')
+                            .success()
+                            .send();
                     "),
-                Action::make('open_map')
-                    ->label('Buka Peta')
-                    ->icon('heroicon-o-map-pin')
-                    ->color('success')
+                Action::make('open_maps')
+                    ->label('Maps')
+                    ->icon('heroicon-m-map-pin')
+                    ->color('primary')
+                    ->button()
                     ->url(fn ($record) => "https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}")
                     ->openUrlInNewTab(),
-                EditAction::make(),
                 ViewAction::make(),
+                EditAction::make(),
             ])
             ->recordUrl(fn ($record) => route('filament.admin.resources.field-inspections.view', $record))
             ->bulkActions([

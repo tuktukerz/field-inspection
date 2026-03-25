@@ -46,9 +46,9 @@ class VisitsExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             'No',
-            'Tower ID',
+            'ID Menara',
             'Tanggal',
-            'Lokasi',
+            'Lokasi Menara',
             'Kelurahan',
             'Letak Titik Menara',
             'Jumlah Mur',
