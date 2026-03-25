@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\FieldInspections\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -60,7 +61,50 @@ class FieldInspectionsTable
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
+                Action::make('copy_info')
+                    ->label('Salin Info')
+                    ->icon('heroicon-o-clipboard-document')
+                    ->color('info')
+                    ->alpineClickHandler(fn ($record) => "
+                        const copyText = atob('" . base64_encode(
+                            "LOKASI\t: {$record->location_name}\n" .
+                            "DETAIL\t: {$record->location_detail}\n" .
+                            "KECAMATAN\t: {$record->kecamatan}\n" .
+                            "KELURAHAN\t: {$record->kelurahan}\n" .
+                            "LETAK TITIK\t: " . strtoupper($record->location_type) . "\n" .
+                            "LATITUDE\t: {$record->latitude}\n" .
+                            "LONGITUDE\t: {$record->longitude}\n" .
+                            "GOOGLE MAPS\t: https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}"
+                        ) . "');
+                        
+                        if (navigator.clipboard && window.isSecureContext) {
+                            navigator.clipboard.writeText(copyText).then(() => {
+                                alert('Info berhasil disalin ke clipboard!');
+                            }).catch(err => {
+                                console.error('Clipboard error:', err);
+                                alert('Gagal salin: ' + err);
+                            });
+                        } else {
+                            const textArea = document.createElement('textarea');
+                            textArea.value = copyText;
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            try {
+                                document.execCommand('copy');
+                                alert('Info berhasil disalin ke clipboard (Fallback)!');
+                            } catch (err) {
+                                alert('Gagal salin total!');
+                            }
+                            document.body.removeChild(textArea);
+                        }
+                    "),
+                Action::make('open_map')
+                    ->label('Buka Peta')
+                    ->icon('heroicon-o-map-pin')
+                    ->color('success')
+                    ->url(fn ($record) => "https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}")
+                    ->openUrlInNewTab(),
                 EditAction::make(),
                 ViewAction::make(),
             ])

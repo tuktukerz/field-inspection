@@ -3,7 +3,7 @@
     {{-- Leaflet CSS --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    {{-- Custom CSS for Map Responsiveness and Layering --}}
+    {{-- Custom CSS for Map Responsiveness, Layering, and Modal --}}
     <style>
         #map {
             height: 400px;
@@ -15,15 +15,49 @@
                 height: 600px;
             }
         }
-        /* Ensure Leaflet controls don't override Filament headers if necessary */
         .leaflet-top, .leaflet-bottom {
             z-index: 400 !important;
+        }
+
+        /* Modal Styles */
+        #imagePreviewModal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+        #imagePreviewModal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+        #imagePreviewModal .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 
     {{-- Map --}}
     <div class="w-full">
         <div id="map"></div>
+    </div>
+
+    {{-- Modal Preview --}}
+    <div id="imagePreviewModal" onclick="this.style.display='none'">
+        <span class="close">&times;</span>
+        <img id="previewImg" src="">
     </div>
 
     {{-- Ambil data --}}
@@ -34,6 +68,13 @@
     {{-- Inject data ke JS (FIX ERROR CONST) --}}
     <script>
         window.mapData = {!! json_encode($mapData) !!};
+
+        function openPreview(src) {
+            const modal = document.getElementById('imagePreviewModal');
+            const img = document.getElementById('previewImg');
+            img.src = src;
+            modal.style.display = 'flex';
+        }
     </script>
 
     {{-- Leaflet JS --}}
@@ -69,13 +110,32 @@
 
                 let imageHtml = '';
 
-                if (item.foto) {
-                    imageHtml = `
-                        <img
-                            src="/storage/${item.foto}"
-                            style="width:100%;border-radius:8px;margin-top:8px;"
-                        />
-                    `;
+                if (item.fotos && item.fotos.length > 0) {
+                    const maxPhotos = 3;
+                    const displayedPhotos = item.fotos.slice(0, maxPhotos);
+                    const remaining = item.fotos.length - maxPhotos;
+
+                    imageHtml = '<div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:5px; justify-content:center;">';
+                    displayedPhotos.forEach(function(foto) {
+                        imageHtml += `
+                            <img
+                                src="/storage/${foto}"
+                                style="width:70px; height:70px; object-fit:cover; border-radius:4px; cursor:zoom-in; border:1px solid #ddd;"
+                                onclick="openPreview(this.src)"
+                                title="Klik untuk memperbesar"
+                            />
+                        `;
+                    });
+
+                    if (remaining > 0) {
+                        imageHtml += `
+                            <div style="width:70px; height:70px; background:#f3f4f6; border:1px solid #ddd; border-radius:4px; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#666; font-size:14px;" title="${remaining} foto lainnya">
+                                +${remaining}
+                            </div>
+                        `;
+                    }
+
+                    imageHtml += '</div><div style="font-size:10px; color:#666; margin-top:5px; text-align:center;">Klik foto untuk memperbesar</div>';
                 }
 
                 const popupContent = `

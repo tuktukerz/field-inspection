@@ -411,6 +411,10 @@ class FieldInspectionForm
                                 ->visibility('public')
                                 ->imagePreviewHeight('150')
                                 ->dehydrated(true)
+                                ->imageResizeMode('cover')
+                                ->imageResizeTargetWidth('1024')
+                                ->imageResizeTargetHeight('1024')
+                                ->maxSize(1024 * 10)
                                 ->required()
                                 ->downloadable()
                                 ->openable(),

@@ -32,7 +32,7 @@ class MapDashboard extends Page
                 'letak' => strtoupper($item->location_type),
                 'latitude' => $item->latitude,
                 'longitude' => $item->longitude,
-                'foto' => $item->images->first()?->image_path,
+                'fotos' => $item->images->pluck('image_path')->toArray(),
             ])
             ->values();
     }
