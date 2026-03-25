@@ -27,7 +27,7 @@ class ExportReport extends Page implements HasForms
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-chart-bar';
     protected static ?string $navigationLabel = 'Laporan';
-    protected static ?string $title = 'Laporan HPL Patroli';
+    protected static ?string $title = 'Laporan Data Inspeksi Lapangan';
     protected string $view = 'filament.pages.export-report';
 
     public ?array $data = [];

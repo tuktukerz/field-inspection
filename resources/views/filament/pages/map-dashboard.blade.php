@@ -277,7 +277,10 @@
                                     <div style="font-size:10px; font-family:'Monaco', monospace; color:#2563eb; font-weight:600;">
                                         ${Number(item.latitude).toFixed(7)}, ${Number(item.longitude).toFixed(7)}
                                     </div>
-                                    <a href="https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}" target="_blank" style="display:flex; align-items:center; gap:4px; font-size:9px; color:#1e40af; text-decoration:none; background:white; padding:3px 8px; border-radius:20px; border:1px solid #bfdbfe; font-weight:700; transition: all 0.2s;">
+                                    <a href="https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}" 
+                                       target="_blank" 
+                                       onclick="if(window.innerWidth < 768) { map.closePopup(); }"
+                                       style="display:flex; align-items:center; gap:4px; font-size:9px; color:#1e40af; text-decoration:none; background:white; padding:3px 8px; border-radius:20px; border:1px solid #bfdbfe; font-weight:700; transition: all 0.2s;">
                                         <svg xmlns="http://www.w3.org/2000/svg" style="width:10px; height:10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.447-.894L15 4m0 13V4m0 0L9 7" />
                                         </svg>
