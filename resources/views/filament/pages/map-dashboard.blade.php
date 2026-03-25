@@ -218,7 +218,7 @@
                     item.latest_fotos.forEach(function(foto) {
                         imageHtml += `
                             <img
-                                src="/storage/${foto}"
+                                src="${foto}"
                                 style="width:85px; height:85px; object-fit:cover; border-radius:8px; cursor:zoom-in; border:2px solid ${color}; flex-shrink:0;"
                                 onclick="openPreview(this.src)"
                             />

@@ -56,7 +56,7 @@ class MapDashboard extends Page
                         'visitor' => $v->creator?->name ?? 'Unknown',
                     ])->toArray(),
                     // Foto dari kunjungan terakhir (3 saja)
-                    'latest_fotos' => $latestVisit ? $latestVisit->images->take(3)->pluck('image_path')->toArray() : [],
+                    'latest_fotos' => $latestVisit ? $latestVisit->images->take(3)->map(fn($img) => \Illuminate\Support\Facades\Storage::disk('public')->url($img->image_path))->toArray() : [],
                 ];
             })
             ->values();
