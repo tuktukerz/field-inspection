@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\FieldInspections\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -34,14 +35,25 @@ class FieldInspectionsTable
                     ->date()
                     ->sortable(),
 
+                // 🔹 LOKASI
+                TextColumn::make('tower.location_name')
+                    ->label('Lokasi Menara')
+                    ->description(fn($record) => $record->tower->location_detail)
+                    ->searchable()
+                    ->sortable(),
+
                 // 🔹 KELURAHAN
                 TextColumn::make('kelurahan')
                     ->label('Kelurahan')
+                    ->badge()
+                    ->color('gray')
                     ->searchable(),
 
                 // 🔹 KECAMATAN
                 TextColumn::make('kecamatan')
                     ->label('Kecamatan')
+                    ->badge()
+                    ->color('info')
                     ->searchable(),
 
                 // 🔹 DIBUAT OLEH
@@ -60,12 +72,32 @@ class FieldInspectionsTable
             ->filters([
                 //
             ])
-            ->recordActions([
-                EditAction::make(),
+            ->actions([
+                Action::make('salin_data')
+                    ->label('Salin Data')
+                    ->icon('heroicon-m-clipboard-document-list')
+                    ->color('gray')
+                    ->button()
+                    ->alpineClickHandler(fn ($record) => "
+                        const text = `ID MENARA : {$record->tower?->tower_id}\\nLOKASI MENARA : {$record->tower?->location_name}\\nDETAIL : {$record->tower?->location_detail}\\nKECAMATAN : {$record->kecamatan}\\nKELURAHAN : {$record->kelurahan}\\nLATITUDE : {$record->latitude}\\nLONGITUDE : {$record->longitude}\\nGOOGLE MAPS : https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}`;
+                        window.navigator.clipboard.writeText(text);
+                        new FilamentNotification()
+                            .title('Info berhasil disalin!')
+                            .success()
+                            .send();
+                    "),
+                Action::make('open_maps')
+                    ->label('Maps')
+                    ->icon('heroicon-m-map-pin')
+                    ->color('primary')
+                    ->button()
+                    ->url(fn ($record) => "https://www.google.com/maps/search/?api=1&query={$record->latitude},{$record->longitude}")
+                    ->openUrlInNewTab(),
                 ViewAction::make(),
+                EditAction::make(),
             ])
             ->recordUrl(fn ($record) => route('filament.admin.resources.field-inspections.view', $record))
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
