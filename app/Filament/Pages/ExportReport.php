@@ -88,6 +88,11 @@ class ExportReport extends Page implements HasForms
                             ->required()
                             ->visible(fn ($get) => $get('date_range') === 'custom')
                             ->default(now()),
+                        Select::make('kecamatan')
+                            ->label('Kecamatan')
+                            ->options(Tower::distinct()->whereNotNull('kecamatan')->pluck('kecamatan', 'kecamatan'))
+                            ->searchable()
+                            ->placeholder('Semua Kecamatan'),
                         Select::make('tower_id')
                             ->label('ID Menara')
                             ->options(Tower::all()->pluck('tower_id', 'id'))
@@ -121,6 +126,7 @@ class ExportReport extends Page implements HasForms
 
     public function downloadPdf()
     {
+        $kecamatan = $this->data['kecamatan'] ?? null;
         $towerId = $this->data['tower_id'] ?? null;
         $userId = $this->data['user_id'] ?? null;
         $startDate = $this->data['start_date'] ?? null;
@@ -136,6 +142,12 @@ class ExportReport extends Page implements HasForms
 
         $query = Visit::with(['images', 'creator', 'tower'])
             ->whereBetween('inspection_date', [$startDate, $endDate]);
+
+        if ($kecamatan) {
+            $query->whereHas('tower', function ($q) use ($kecamatan) {
+                $q->where('kecamatan', $kecamatan);
+            });
+        }
 
         if ($towerId) {
             $query->where('tower_id', $towerId);
@@ -181,6 +193,7 @@ class ExportReport extends Page implements HasForms
 
     public function downloadExcel()
     {
+        $kecamatan = $this->data['kecamatan'] ?? null;
         $towerId = $this->data['tower_id'] ?? null;
         $userId = $this->data['user_id'] ?? null;
         $startDate = $this->data['start_date'] ?? null;
@@ -195,7 +208,7 @@ class ExportReport extends Page implements HasForms
         }
 
         return Excel::download(
-            new VisitsExport($startDate, $endDate, $towerId, $userId),
+            new VisitsExport($startDate, $endDate, $towerId, $userId, $kecamatan),
             "Laporan_Menara_Telekomunikasi_{$startDate}_{$endDate}.xlsx"
         );
     }

@@ -53,6 +53,11 @@
             font-family: 'Inter', sans-serif;
             border: 1px solid #eee;
         }
+        .dark .map-legend {
+            background: #111827;
+            border-color: #374151;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
         .legend-item {
             display: flex;
             align-items: center;
@@ -102,18 +107,18 @@
         
         {{-- Floating Legend --}}
         <div class="map-legend absolute bottom-5 right-5 z-[500] hidden md:block">
-            <h4 class="font-bold mb-2 text-gray-700">Status Inspeksi</h4>
+            <h4 class="font-bold mb-2 text-gray-700 dark:text-gray-200">Status Inspeksi</h4>
             <div class="legend-item">
                 <div class="legend-color" style="background: #10b981;"></div>
-                <span class="text-gray-600">Terpantau (< 30 hari)</span>
+                <span class="text-gray-600 dark:text-gray-400">Terpantau (< 30 hari)</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #facc15;"></div>
-                <span class="text-gray-600">Perlu Cek (31 - 90 hari)</span>
+                <span class="text-gray-600 dark:text-gray-400">Perlu Cek (31 - 90 hari)</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #ef4444;"></div>
-                <span class="text-gray-600">Urgent (> 90 hari / Belum)</span>
+                <span class="text-gray-600 dark:text-gray-400">Urgent (> 90 hari / Belum)</span>
             </div>
         </div>
     </div>

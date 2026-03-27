@@ -16,13 +16,15 @@ class VisitsExport implements FromQuery, WithHeadings, WithMapping
     protected $endDate;
     protected $towerId;
     protected $userId;
+    protected $kecamatan;
 
-    public function __construct($startDate, $endDate, $towerId = null, $userId = null)
+    public function __construct($startDate, $endDate, $towerId = null, $userId = null, $kecamatan = null)
     {
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->towerId = $towerId;
         $this->userId = $userId;
+        $this->kecamatan = $kecamatan;
     }
 
     public function query()
@@ -37,6 +39,12 @@ class VisitsExport implements FromQuery, WithHeadings, WithMapping
 
         if ($this->userId) {
             $query->where('created_by', $this->userId);
+        }
+
+        if ($this->kecamatan) {
+            $query->whereHas('tower', function ($q) {
+                $q->where('kecamatan', $this->kecamatan);
+            });
         }
 
         return $query->orderBy('inspection_date', 'asc');
