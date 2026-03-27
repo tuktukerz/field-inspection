@@ -1,0 +1,38 @@
+{
+    "id": "/admin",
+    "name": "Inspection Controlling",
+    "short_name": "Inscol",
+    "description": "Aplikasi Pengawasan dan Inspeksi Menara Telekomunikasi DCKTRP",
+    "start_url": "/admin",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0284c7",
+    "icons": [
+        {
+            "src": "/icons/icon-192x192.png",
+            "sizes": "640x640",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/icon-512x512.png",
+            "sizes": "640x640",
+            "type": "image/png"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshots/mobile.png",
+            "sizes": "640x640",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Dashboard Mobile"
+        },
+        {
+            "src": "/screenshots/desktop.png",
+            "sizes": "640x640",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Dashboard Desktop"
+        }
+    ]
+}
