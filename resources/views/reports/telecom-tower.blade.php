@@ -68,8 +68,8 @@
                 <th rowspan="2" style="width: 80px;">Wilayah</th>
                 <th rowspan="2" style="width: 120px;">Koordinat</th>
                 <th rowspan="2" style="width: 65px;">Tanggal</th>
-                <th rowspan="2" style="width: 70px;">Pemeriksa</th>
-                <th rowspan="2" style="width: 50px;">Letak Titik menara</th>
+
+                <th rowspan="2" style="width: 50px;">Letak Titik Menara</th>
                 <th colspan="3">Struktur Pengait Rangka</th>
                 <th colspan="2">Struktur Rangka Menara</th>
                 <th colspan="3">Kondisi Bidang Menara</th>
@@ -79,8 +79,8 @@
                 <th style="width: 45px;">Jumlah Mur/Baut</th>
                 <th style="width: 50px;">Kondisi Mur/Baut</th>
                 <th style="width: 55px;">Posisi Pasangan Mur/Baut</th>
-                <th style="width: 55px;">Kondisi Rangka Menara*</th>
-                <th style="width: 70px;">Sambungan Rangka Utama (Pemeliharaan)</th>
+                <th style="width: 55px;">Kondisi Rangka</th>
+                <th style="width: 70px;">Sambungan Rangka Utama</th>
                 <th style="width: 55px;">Struktur Panel</th>
                 <th style="width: 50px;">Bidang Panel</th>
                 <th style="width: 50px;">Rangka Lampu</th>
@@ -121,7 +121,7 @@
                         @endif
 
                         <td>{{ \Carbon\Carbon::parse($item->inspection_date)->isoFormat('DD/MM/YYYY') }}</td>
-                        <td>{{ $item->creator?->name ?? 'System' }}</td>
+
                         <td>{{ strtoupper($item->location_type) }}</td>
                         
                         {{-- Struktur Pengait Rangka --}}
