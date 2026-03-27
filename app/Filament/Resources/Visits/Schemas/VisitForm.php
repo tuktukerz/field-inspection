@@ -26,6 +26,7 @@ class VisitForm
                         Select::make('tower_id')
                             ->label('Pilih Tower')
                             ->relationship('tower', 'location_name')
+                            ->getOptionLabelFromRecordUsing(fn (Tower $record) => "{$record->location_name} ({$record->location_detail})")
                             ->searchable()
                             ->preload()
                             ->required()

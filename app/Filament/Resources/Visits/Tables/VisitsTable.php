@@ -23,6 +23,21 @@ class VisitsTable
                     ->sortable()
                     ->hidden(fn ($livewire) => $livewire instanceof RelationManager),
 
+                TextColumn::make('tower.location_name')
+                    ->label('Nama Lokasi')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('tower.kecamatan')
+                    ->label('Kecamatan')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('tower.location_detail')
+                    ->label('Detail Lokasi')
+                    ->limit(50)
+                    ->searchable(),
+
                 TextColumn::make('inspection_date')
                     ->label('Tanggal Inspeksi')
                     ->date()

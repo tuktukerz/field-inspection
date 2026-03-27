@@ -30,6 +30,12 @@ class LatestVisits extends BaseWidget
                 TextColumn::make('tower.location_name')
                     ->label('Lokasi')
                     ->limit(30),
+                TextColumn::make('tower.kecamatan')
+                    ->label('Kecamatan')
+                    ->sortable(),
+                TextColumn::make('tower.location_detail')
+                    ->label('Detail Lokasi')
+                    ->limit(50),
                 TextColumn::make('creator.name')
                     ->label('Pemeriksa'),
             ])
