@@ -24,12 +24,26 @@ class VisitForm
                 Section::make('Informasi Kunjungan')
                     ->schema([
                         Select::make('tower_id')
-                            ->label('Pilih Tower')
+                            ->label('Pilih Menara')
                             ->relationship('tower', 'location_name')
+                            ->getOptionLabelFromRecordUsing(fn (Tower $record) => "{$record->location_name} ({$record->location_detail}, Kel. {$record->kelurahan}, Kec. {$record->kecamatan})")
                             ->searchable()
                             ->preload()
                             ->required()
+                            ->live()
                             ->hidden(fn ($livewire) => $livewire instanceof RelationManager),
+
+                        Placeholder::make('tower_address')
+                            ->label('Detail Alamat')
+                            ->content(function ($get) {
+                                $towerId = $get('tower_id');
+                                if (!$towerId) return '-';
+                                $tower = Tower::find($towerId);
+                                if (!$tower) return '-';
+                                return "{$tower->location_name} ({$tower->location_detail}) - Kel. {$tower->kelurahan}, Kec. {$tower->kecamatan}";
+                            })
+                            ->visible(fn ($get) => filled($get('tower_id')))
+                            ->columnSpanFull(),
 
                         DatePicker::make('inspection_date')
                             ->label('Tanggal Inspeksi')

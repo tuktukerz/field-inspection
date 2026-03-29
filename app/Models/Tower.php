@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Tower extends Model
 {
@@ -37,9 +38,11 @@ class Tower extends Model
     {
         static::creating(function ($model) {
             if (!$model->tower_id) {
-                $date = now()->format('Ymd');
-                $count = self::whereDate('created_at', now())->count() + 1;
-                $model->tower_id = 'MNR-' . $date . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
+                do {
+                    $randomId = 'MNR-' . strtoupper(Str::random(6));
+                } while (self::where('tower_id', $randomId)->exists());
+                
+                $model->tower_id = $randomId;
             }
 
             if (auth()->check()) {

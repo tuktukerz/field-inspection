@@ -29,7 +29,11 @@ class LatestVisits extends BaseWidget
                     ->sortable(),
                 TextColumn::make('tower.location_name')
                     ->label('Lokasi')
-                    ->limit(30),
+                    ->description(fn ($record) => $record?->tower?->location_detail)
+                    ->wrap(),
+                TextColumn::make('tower.kecamatan')
+                    ->label('Wilayah')
+                    ->description(fn ($record) => "Kel. {$record?->tower?->kelurahan}"),
                 TextColumn::make('creator.name')
                     ->label('Pemeriksa'),
             ])

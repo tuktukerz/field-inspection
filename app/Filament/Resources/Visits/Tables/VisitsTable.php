@@ -23,6 +23,17 @@ class VisitsTable
                     ->sortable()
                     ->hidden(fn ($livewire) => $livewire instanceof RelationManager),
 
+                TextColumn::make('tower.location_name')
+                    ->label('Alamat Detail')
+                    ->description(fn ($record) => $record?->tower?->location_detail)
+                    ->searchable(['location_name', 'location_detail'])
+                    ->wrap(),
+
+                TextColumn::make('tower.kecamatan')
+                    ->label('Wilayah')
+                    ->description(fn ($record) => "Kel. {$record?->tower?->kelurahan}")
+                    ->searchable(['kecamatan', 'kelurahan']),
+
                 TextColumn::make('inspection_date')
                     ->label('Tanggal Inspeksi')
                     ->date()
@@ -32,6 +43,16 @@ class VisitsTable
                     ->label('Visited By'),
             ])
             ->filters([
+                SelectFilter::make('kecamatan')
+                    ->label('Filter per Kecamatan')
+                    ->options(\App\Models\Tower::query()->distinct()->whereNotNull('kecamatan')->pluck('kecamatan', 'kecamatan'))
+                    ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data) {
+                        if (! $data['value']) {
+                            return $query;
+                        }
+                        return $query->whereHas('tower', fn ($q) => $q->where('kecamatan', $data['value']));
+                    }),
+
                 SelectFilter::make('tower_id')
                     ->label('Filter by Tower')
                     ->relationship('tower', 'tower_id')
