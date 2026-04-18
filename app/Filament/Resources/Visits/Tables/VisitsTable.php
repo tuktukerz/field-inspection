@@ -18,7 +18,7 @@ class VisitsTable
                     ->rowIndex(),
 
                 TextColumn::make('tower.tower_id')
-                    ->label('Tower ID')
+                    ->label('ID Menara')
                     ->searchable()
                     ->sortable()
                     ->hidden(fn ($livewire) => $livewire instanceof RelationManager),
@@ -40,7 +40,7 @@ class VisitsTable
                     ->sortable(),
 
                 TextColumn::make('creator.name')
-                    ->label('Visited By'),
+                    ->label('Pemeriksa'),
             ])
             ->filters([
                 SelectFilter::make('kecamatan')
@@ -54,7 +54,7 @@ class VisitsTable
                     }),
 
                 SelectFilter::make('tower_id')
-                    ->label('Filter by Tower')
+                    ->label('ID Menara')
                     ->relationship('tower', 'tower_id')
                     ->searchable()
                     ->preload()
@@ -65,6 +65,12 @@ class VisitsTable
                     ->relationship('creator', 'name')
                     ->searchable()
                     ->preload(),
-            ]);
+            ])
+            ->striped()
+            ->defaultSort('inspection_date', 'desc')
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->emptyStateHeading('Belum ada riwayat visit')
+            ->emptyStateDescription('Tambahkan riwayat visit pertama untuk mulai mencatat inspeksi menara.')
+            ->emptyStateIcon('heroicon-o-clipboard-document-check');
     }
 }

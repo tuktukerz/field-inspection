@@ -81,7 +81,7 @@ class VisitForm
                             ->content(fn ($record) => $record?->creator?->name ?? '-'),
                     ])->columns(2),
 
-                Section::make('Struktur Pengait Rangka')
+                Section::make('Struktur Pengait Menara')
                     ->schema([
                         Radio::make('bolt_count')
                             ->label('Jumlah Mur/Baut Pengait')
@@ -126,7 +126,7 @@ class VisitForm
                             ->required(),
 
                         Radio::make('frame_maintenance')
-                            ->label('Pemeliharaan Rangka')
+                            ->label('Pemeliharaan Rangka Menara')
                             ->options([
                                 'not_maintained' => 'Tidak Terpelihara (tidak dicat)',
                                 'maintained' => 'Terpelihara (dicat)',
@@ -135,7 +135,7 @@ class VisitForm
                             ->required(),
 
                         Radio::make('frame_rust')
-                            ->label('Karat Rangka')
+                            ->label('Karat Rangka Menara')
                             ->options([
                                 'rusted' => 'Berkarat',
                                 'not_rusted' => 'Tidak Berkarat',
@@ -144,7 +144,7 @@ class VisitForm
                             ->required(),
 
                         Radio::make('frame_porous')
-                            ->label('Keropos Rangka')
+                            ->label('Keropos Rangka Menara')
                             ->options([
                                 'porous' => 'Keropos',
                                 'not_porous' => 'Tidak Keropos',
@@ -155,8 +155,8 @@ class VisitForm
                         Radio::make('joint_maintenance')
                             ->label('Sambungan Rangka Utama (Pemeliharaan)')
                             ->options([
-                                'not_maintained' => 'Tidak Terpelihara',
-                                'maintained' => 'Terpelihara',
+                                'not_maintained' => 'Tidak Terpelihara (tidak dicat)',
+                                'maintained' => 'Terpelihara (dicat)',
                                 'not_visible' => 'Tidak Terlihat',
                             ])
                             ->inline()
@@ -188,8 +188,8 @@ class VisitForm
                         Radio::make('panel_structure')
                             ->label('Struktur Panel')
                             ->options([
-                                'not_connected_well' => 'Tidak Tersambung Baik',
-                                'connected_well' => 'Tersambung Baik',
+                                'not_connected_well' => 'Tidak Tersambung Baik Pada tiang utama',
+                                'connected_well' => 'Tersambung Baik Pada tiang utama',
                             ])
                             ->inline()
                             ->required(),
@@ -220,10 +220,10 @@ class VisitForm
                         Textarea::make('notes')->columnSpanFull(),
 
                         Radio::make('construction_feasibility')
-                            ->label('Kelayakan Konstruksi')
+                            ->label('Kondisi Kelayakan Konstruksi Menara')
                             ->options([
                                 'dangerous' => 'Berpotensi Membahayakan',
-                                'not_dangerous' => 'Tidak Membahayakan',
+                                'not_dangerous' => 'Tidak Berpotensi Membahayakan',
                             ])
                             ->inline()
                             ->required(),
@@ -231,8 +231,8 @@ class VisitForm
                         Radio::make('follow_up_action')
                             ->label('Tindak Lanjut')
                             ->options([
-                                'enforcement_proposal' => 'Penertiban',
-                                'periodic_monitoring' => 'Monitoring',
+                                'enforcement_proposal' => 'Segera Usul Penertiban',
+                                'periodic_monitoring' => 'Monitor Berkala',
                             ])
                             ->inline()
                             ->required(),
@@ -254,6 +254,9 @@ class VisitForm
                                     ->directory('visit-images')
                                     ->visibility('public')
                                     ->openable()
+                                    ->saveUploadedFileUsing(fn ($file) =>
+                                        \App\Services\ImageCompressor::compressAndStore($file, 'visit-images')
+                                    )
                                     ->required(),
 
                                 TextInput::make('caption')

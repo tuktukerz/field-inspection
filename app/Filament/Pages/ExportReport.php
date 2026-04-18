@@ -27,8 +27,17 @@ class ExportReport extends Page implements HasForms
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-chart-bar';
     protected static ?string $navigationLabel = 'Laporan';
+    protected static ?int $navigationSort = 5;
     protected static ?string $title = 'Laporan Data Inspeksi Lapangan';
     protected string $view = 'filament.pages.export-report';
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Inspeksi Lapangan',
+            'Laporan',
+        ];
+    }
 
     public ?array $data = [];
 
@@ -115,11 +124,13 @@ class ExportReport extends Page implements HasForms
             Action::make('downloadPdf')
                 ->label('Unduh PDF')
                 ->icon('heroicon-o-document-arrow-down')
+                ->button()
                 ->action(fn() => $this->downloadPdf()),
             Action::make('downloadExcel')
                 ->label('Unduh XLS')
                 ->icon('heroicon-o-table-cells')
                 ->color('success')
+                ->button()
                 ->action(fn() => $this->downloadExcel()),
         ];
     }
@@ -184,6 +195,8 @@ class ExportReport extends Page implements HasForms
             'tahun' => $tahun,
             'quarter' => $quarterLabel,
             'year' => $tahun,
+            'generatedAt' => now()->isoFormat('D MMMM YYYY, HH:mm'),
+            'generatedBy' => auth()->user()?->name ?? 'System',
         ])->setPaper('a4', 'landscape');
 
         return response()->streamDownload(function () use ($pdf) {

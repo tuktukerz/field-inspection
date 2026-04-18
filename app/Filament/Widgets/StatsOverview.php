@@ -14,17 +14,17 @@ class StatsOverview extends BaseWidget
         return [
             Stat::make('Total Menara', Tower::count())
                 ->description('Jumlah menara terdaftar')
-                ->descriptionIcon('heroicon-m-building-office')
-                ->color('primary'),
+                ->descriptionIcon('heroicon-m-building-office-2')
+                ->color('info'),
             Stat::make('Total Inspeksi', Visit::count())
-                ->description('Seluruh riwayat patroli')
+                ->description('Seluruh riwayat inspeksi')
                 ->descriptionIcon('heroicon-m-clipboard-document-check')
                 ->color('success'),
             Stat::make('Inspeksi Bulan Ini', Visit::whereMonth('inspection_date', now()->month)
                 ->whereYear('inspection_date', now()->year)
                 ->count())
                 ->description('Aktivitas patroli bulan ' . now()->isoFormat('MMMM'))
-                ->descriptionIcon('heroicon-m-calendar')
+                ->descriptionIcon('heroicon-m-calendar-days')
                 ->color('warning'),
         ];
     }

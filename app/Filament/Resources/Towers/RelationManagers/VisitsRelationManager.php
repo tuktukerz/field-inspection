@@ -39,7 +39,7 @@ class VisitsRelationManager extends RelationManager
         return VisitsTable::configure($table)
             ->headerActions([
                 CreateAction::make()
-                    ->label('Tambah Kunjungan')
+                    ->label('Tambah Riwayat Visit')
                     ->button()
                     ->color('primary')
                     ->icon('heroicon-o-plus'),

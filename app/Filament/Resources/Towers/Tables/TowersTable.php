@@ -11,6 +11,10 @@ class TowersTable
     {
         return $table
             ->columns([
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex(),
+
                 TextColumn::make('tower_id')
                     ->label('ID Menara')
                     ->copyable()
@@ -32,11 +36,17 @@ class TowersTable
                     ->searchable(),
 
                 TextColumn::make('visits_count')
-                    ->label('Kunjungan')
+                    ->label('Visit')
                     ->counts('visits')
                     ->badge()
                     ->color('success'),
-            ]);
+            ])
+            ->striped()
+            ->defaultSort('created_at', 'desc')
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->emptyStateHeading('Belum ada menara')
+            ->emptyStateDescription('Tambahkan menara telekomunikasi pertama untuk mulai inspeksi.')
+            ->emptyStateIcon('heroicon-o-building-office-2');
     }
 
     public static function actions(): array

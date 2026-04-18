@@ -19,8 +19,11 @@ class LatestVisits extends BaseWidget
                 Visit::query()->latest('inspection_date')->limit(5)
             )
             ->columns([
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex(),
                 TextColumn::make('tower.tower_id')
-                    ->label('Tower ID')
+                    ->label('ID Menara')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('inspection_date')
@@ -33,6 +36,8 @@ class LatestVisits extends BaseWidget
                     ->wrap(),
                 TextColumn::make('tower.kecamatan')
                     ->label('Wilayah')
+                    ->badge()
+                    ->color('info')
                     ->description(fn ($record) => "Kel. {$record?->tower?->kelurahan}"),
                 TextColumn::make('creator.name')
                     ->label('Pemeriksa'),
