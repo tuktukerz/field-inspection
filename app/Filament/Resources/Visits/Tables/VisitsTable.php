@@ -65,6 +65,12 @@ class VisitsTable
                     ->relationship('creator', 'name')
                     ->searchable()
                     ->preload(),
-            ]);
+            ])
+            ->striped()
+            ->defaultSort('inspection_date', 'desc')
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->emptyStateHeading('Belum ada riwayat visit')
+            ->emptyStateDescription('Tambahkan riwayat visit pertama untuk mulai mencatat inspeksi menara.')
+            ->emptyStateIcon('heroicon-o-clipboard-document-check');
     }
 }

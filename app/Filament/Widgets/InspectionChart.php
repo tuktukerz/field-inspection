@@ -26,8 +26,11 @@ class InspectionChart extends ChartWidget
                     'label' => 'Jumlah Menara',
                     'data' => $data->pluck('count')->toArray(),
                     'backgroundColor' => [
-                        '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
+                        '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6',
+                        '#f97316', '#6366f1', '#84cc16', '#06b6d4',
                     ],
+                    'borderColor' => '#ffffff',
+                    'borderWidth' => 2,
                 ],
             ],
             'labels' => $data->pluck('kecamatan')->toArray(),
@@ -36,6 +39,6 @@ class InspectionChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'pie';
+        return 'doughnut';
     }
 }

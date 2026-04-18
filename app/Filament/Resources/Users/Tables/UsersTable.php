@@ -44,6 +44,12 @@ class UsersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped()
+            ->defaultSort('created_at', 'desc')
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->emptyStateHeading('Belum ada pengguna')
+            ->emptyStateDescription('Mulai dengan menambahkan pengguna pertama untuk mengelola sistem.')
+            ->emptyStateIcon('heroicon-o-users');
     }
 }

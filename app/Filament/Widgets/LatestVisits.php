@@ -33,6 +33,8 @@ class LatestVisits extends BaseWidget
                     ->wrap(),
                 TextColumn::make('tower.kecamatan')
                     ->label('Wilayah')
+                    ->badge()
+                    ->color('info')
                     ->description(fn ($record) => "Kel. {$record?->tower?->kelurahan}"),
                 TextColumn::make('creator.name')
                     ->label('Pemeriksa'),

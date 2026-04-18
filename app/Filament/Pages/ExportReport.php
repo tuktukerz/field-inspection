@@ -116,11 +116,13 @@ class ExportReport extends Page implements HasForms
             Action::make('downloadPdf')
                 ->label('Unduh PDF')
                 ->icon('heroicon-o-document-arrow-down')
+                ->button()
                 ->action(fn() => $this->downloadPdf()),
             Action::make('downloadExcel')
                 ->label('Unduh XLS')
                 ->icon('heroicon-o-table-cells')
                 ->color('success')
+                ->button()
                 ->action(fn() => $this->downloadExcel()),
         ];
     }

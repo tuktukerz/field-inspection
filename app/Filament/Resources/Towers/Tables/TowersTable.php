@@ -36,7 +36,13 @@ class TowersTable
                     ->counts('visits')
                     ->badge()
                     ->color('success'),
-            ]);
+            ])
+            ->striped()
+            ->defaultSort('created_at', 'desc')
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->emptyStateHeading('Belum ada menara')
+            ->emptyStateDescription('Tambahkan menara telekomunikasi pertama untuk mulai inspeksi.')
+            ->emptyStateIcon('heroicon-o-building-office-2');
     }
 
     public static function actions(): array
