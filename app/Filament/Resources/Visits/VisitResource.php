@@ -23,6 +23,8 @@ class VisitResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
     protected static ?string $navigationLabel = 'Menara Visit';
+    protected static ?string $pluralLabel = 'Menara Visit';
+    protected static ?string $modelLabel = 'Menara Visit';
     protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema

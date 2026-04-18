@@ -31,6 +31,14 @@ class ExportReport extends Page implements HasForms
     protected static ?string $title = 'Laporan Data Inspeksi Lapangan';
     protected string $view = 'filament.pages.export-report';
 
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Inspeksi Lapangan',
+            'Laporan',
+        ];
+    }
+
     public ?array $data = [];
 
     public function mount(): void
@@ -187,6 +195,8 @@ class ExportReport extends Page implements HasForms
             'tahun' => $tahun,
             'quarter' => $quarterLabel,
             'year' => $tahun,
+            'generatedAt' => now()->isoFormat('D MMMM YYYY, HH:mm'),
+            'generatedBy' => auth()->user()?->name ?? 'System',
         ])->setPaper('a4', 'landscape');
 
         return response()->streamDownload(function () use ($pdf) {

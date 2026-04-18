@@ -11,6 +11,10 @@ class TowersTable
     {
         return $table
             ->columns([
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex(),
+
                 TextColumn::make('tower_id')
                     ->label('ID Menara')
                     ->copyable()

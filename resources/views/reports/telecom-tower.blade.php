@@ -4,7 +4,7 @@
     <title>Laporan Hasil Pemeriksaan Lapangan (HPL) Visual Menara Telekomunikasi</title>
     <style>
         @page {
-            margin: 1cm;
+            margin: 1cm 1cm 1.6cm 1cm;
         }
         body {
             font-family: Arial, sans-serif;
@@ -179,5 +179,34 @@
             @endforeach
         </tbody>
     </table>
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $font = $fontMetrics->get_font('Arial', 'normal');
+            $size = 7.5;
+            $color = [0.33, 0.33, 0.33];
+            $pageWidth = $pdf->get_width();
+            $pageHeight = $pdf->get_height();
+            $bottom = $pageHeight - 22;
+
+            $pdf->page_text(
+                28,
+                $bottom,
+                "Dibuat pada: {{ $generatedAt }} oleh {{ $generatedBy }}",
+                $font,
+                $size,
+                $color
+            );
+
+            $pdf->page_text(
+                $pageWidth - 110,
+                $bottom,
+                "Halaman {PAGE_NUM} dari {PAGE_COUNT}",
+                $font,
+                $size,
+                $color
+            );
+        }
+    </script>
 </body>
 </html>

@@ -24,12 +24,12 @@
         </svg>
     </div>
     <span
+        class="fi-custom-brand-text"
         style="
             font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
             font-size: 1rem;
             font-weight: 700;
             letter-spacing: -0.015em;
-            color: var(--gray-900, #0f172a);
         "
     >
         Inspeksi Lapangan

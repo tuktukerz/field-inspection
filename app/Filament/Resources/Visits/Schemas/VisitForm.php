@@ -254,6 +254,9 @@ class VisitForm
                                     ->directory('visit-images')
                                     ->visibility('public')
                                     ->openable()
+                                    ->saveUploadedFileUsing(fn ($file) =>
+                                        \App\Services\ImageCompressor::compressAndStore($file, 'visit-images')
+                                    )
                                     ->required(),
 
                                 TextInput::make('caption')

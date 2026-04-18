@@ -5,6 +5,10 @@
             background-image: radial-gradient(#e5e7eb 1px, transparent 1px) !important;
             background-size: 20px 20px !important;
         }
+        .dark body {
+            background-color: #0a0a0a !important;
+            background-image: radial-gradient(#27272a 1px, transparent 1px) !important;
+        }
         .fi-simple-layout {
             min-height: 100vh;
             display: flex;
@@ -27,6 +31,11 @@
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
             padding: 2.25rem 2rem;
             border: 1px solid #f1f5f9;
+        }
+        .dark .fi-simple-main {
+            background: #18181b;
+            border-color: #27272a;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.3);
         }
         .fi-simple-page-header,
         .fi-logo {
@@ -57,10 +66,16 @@
             color: #0f172a;
             margin: 0;
         }
+        .dark .fi-custom-login-title {
+            color: #f4f4f5;
+        }
         .fi-custom-login-divider {
             height: 1px;
             background: #f1f5f9;
             margin-bottom: 1.5rem;
+        }
+        .dark .fi-custom-login-divider {
+            background: #27272a;
         }
     </style>
 

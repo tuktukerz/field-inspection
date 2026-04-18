@@ -40,7 +40,7 @@ class VisitsTable
                     ->sortable(),
 
                 TextColumn::make('creator.name')
-                    ->label('Visited By'),
+                    ->label('Pemeriksa'),
             ])
             ->filters([
                 SelectFilter::make('kecamatan')

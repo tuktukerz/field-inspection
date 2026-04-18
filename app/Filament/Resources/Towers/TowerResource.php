@@ -26,7 +26,7 @@ class TowerResource extends Resource
 {
     protected static ?string $model = Tower::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSignal;
     protected static ?string $navigationLabel = 'Daftar Menara Telekomunikasi';
     protected static ?int $navigationSort = 3;
     protected static ?string $pluralLabel = 'Menara Telekomunikasi';

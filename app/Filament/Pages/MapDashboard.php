@@ -16,6 +16,14 @@ class MapDashboard extends Page
         return 'Peta Persebaran Data';
     }
 
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Inspeksi Lapangan',
+            'Peta Persebaran Data',
+        ];
+    }
+
     protected string $view = 'filament.pages.map-dashboard';
 
     public function getMapData()

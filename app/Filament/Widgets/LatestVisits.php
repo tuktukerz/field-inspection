@@ -19,6 +19,9 @@ class LatestVisits extends BaseWidget
                 Visit::query()->latest('inspection_date')->limit(5)
             )
             ->columns([
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->rowIndex(),
                 TextColumn::make('tower.tower_id')
                     ->label('ID Menara')
                     ->searchable()
