@@ -17,7 +17,7 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-building-office')
                 ->color('primary'),
             Stat::make('Total Inspeksi', Visit::count())
-                ->description('Seluruh riwayat patroli')
+                ->description('Seluruh riwayat inspeksi')
                 ->descriptionIcon('heroicon-m-clipboard-document-check')
                 ->color('success'),
             Stat::make('Inspeksi Bulan Ini', Visit::whereMonth('inspection_date', now()->month)

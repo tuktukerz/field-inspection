@@ -8,6 +8,8 @@ use App\Models\Tower;
 class MapDashboard extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
+    protected static ?string $navigationLabel = 'Peta Persebaran Data';
+    protected static ?int $navigationSort = 2;
 
     public function getTitle(): string
     {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Menara Telekomunikasi</title>
+    <title>Laporan Hasil Pemeriksaan Lapangan (HPL) Visual Menara Telekomunikasi</title>
     <style>
         @page {
             margin: 1cm;
@@ -55,7 +55,7 @@
 </head>
 <body>
     <div class="header">
-        Laporan Menara Telekomunikasi<br>
+        Laporan Hasil Pemeriksaan Lapangan (HPL) Visual Menara Telekomunikasi<br>
         {{ $quarter }} Tahun {{ $year }}
     </div>
 
@@ -70,15 +70,16 @@
                 <th rowspan="2" style="width: 65px;">Tanggal</th>
 
                 <th rowspan="2" style="width: 50px;">Letak Titik Menara</th>
-                <th colspan="3">Struktur Pengait Rangka</th>
+                <th colspan="3">Struktur Pengait Menara</th>
                 <th colspan="2">Struktur Rangka Menara</th>
                 <th colspan="3">Kondisi Bidang Menara</th>
+                <th rowspan="2" style="width: 80px;">Kelayakan Konstruksi & Tindak Lanjut</th>
                 <th rowspan="2" style="width: 100px;">Foto</th>
             </tr>
             <tr>
-                <th style="width: 45px;">Jumlah Mur/Baut</th>
-                <th style="width: 50px;">Kondisi Mur/Baut</th>
-                <th style="width: 55px;">Posisi Pasangan Mur/Baut</th>
+                <th style="width: 45px;">Jumlah Mur/Baut Pengait</th>
+                <th style="width: 50px;">Kondisi Mur/Baut Pengait</th>
+                <th style="width: 55px;">Posisi Pasangan Mur/Baut Pengait</th>
                 <th style="width: 55px;">Kondisi Rangka</th>
                 <th style="width: 70px;">Sambungan Rangka Utama</th>
                 <th style="width: 55px;">Struktur Panel</th>
@@ -122,12 +123,12 @@
 
                         <td>{{ \Carbon\Carbon::parse($item->inspection_date)->isoFormat('DD/MM/YYYY') }}</td>
 
-                        <td>{{ strtoupper($item->location_type) }}</td>
+                        <td>{{ ['jpo' => 'JPO', 'jpm' => 'JPM', 'flyover' => 'Flyover', 'underpass' => 'Underpass', 'pedestrian' => 'Pedestrian', 'rth' => 'RTH'][$item->location_type] ?? ucfirst($item->location_type) }}</td>
                         
-                        {{-- Struktur Pengait Rangka --}}
+                        {{-- Struktur Pengait Menara --}}
                         <td>{{ $item->bolt_count === 'lengkap' ? 'Lengkap' : ($item->bolt_count === 'tidak_lengkap' ? 'Tidak Lengkap' : 'Tidak Terlihat') }}</td>
-                        <td>{{ $item->bolt_condition === 'berkarat' ? 'Berkarat' : ($item->bolt_condition === 'tidak_berkarat' ? 'Normal' : 'Tidak Terlihat') }}</td>
-                        <td>{{ $item->bolt_position === 'longgar' ? 'Longgar' : ($item->bolt_position === 'tidak_longgar' ? 'Kencang' : 'Tidak Terlihat') }}</td>
+                        <td>{{ $item->bolt_condition === 'berkarat' ? 'Berkarat' : ($item->bolt_condition === 'tidak_berkarat' ? 'Tidak Berkarat' : 'Tidak Terlihat') }}</td>
+                        <td>{{ $item->bolt_position === 'longgar' ? 'Longgar' : ($item->bolt_position === 'tidak_longgar' ? 'Tidak Longgar' : 'Tidak Terlihat') }}</td>
 
                         {{-- Struktur Rangka Menara --}}
                         <td>
@@ -143,9 +144,15 @@
                         </td>
 
                         {{-- Kondisi Bidang Menara --}}
-                        <td>{{ $item->panel_structure === 'connected_well' ? 'Tersambung Baik' : 'Tidak Tersambung Baik' }}</td>
+                        <td>{{ $item->panel_structure === 'connected_well' ? 'Tersambung Baik Pada tiang utama' : 'Tidak Tersambung Baik Pada tiang utama' }}</td>
                         <td>{{ $item->panel_status === 'no_loose' ? 'Tidak Ada yang lepas' : ($item->panel_status === 'loose' ? 'Ada yang lepas' : 'Tidak Ada Bidang Panel') }}</td>
                         <td>{{ $item->lamp_frame === 'connected_well' ? 'Tersambung Baik' : ($item->lamp_frame === 'not_connected_well' ? 'Tidak Tersambung Baik' : 'Tidak Ada Lampu') }}</td>
+
+                        {{-- Kelayakan Konstruksi & Tindak Lanjut --}}
+                        <td>
+                            {{ $item->construction_feasibility === 'dangerous' ? 'Berpotensi Membahayakan' : 'Tidak Berpotensi Membahayakan' }},
+                            {{ $item->follow_up_action === 'enforcement_proposal' ? 'Segera Usul Penertiban' : 'Monitor Berkala' }}
+                        </td>
 
                         <td>
                             @if($item->images->count() > 0)

@@ -20,7 +20,7 @@ class LatestVisits extends BaseWidget
             )
             ->columns([
                 TextColumn::make('tower.tower_id')
-                    ->label('Tower ID')
+                    ->label('ID Menara')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('inspection_date')

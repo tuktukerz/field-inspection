@@ -18,7 +18,7 @@ class VisitsTable
                     ->rowIndex(),
 
                 TextColumn::make('tower.tower_id')
-                    ->label('Tower ID')
+                    ->label('ID Menara')
                     ->searchable()
                     ->sortable()
                     ->hidden(fn ($livewire) => $livewire instanceof RelationManager),
@@ -54,7 +54,7 @@ class VisitsTable
                     }),
 
                 SelectFilter::make('tower_id')
-                    ->label('Filter by Tower')
+                    ->label('ID Menara')
                     ->relationship('tower', 'tower_id')
                     ->searchable()
                     ->preload()
