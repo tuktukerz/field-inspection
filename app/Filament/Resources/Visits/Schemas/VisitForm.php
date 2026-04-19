@@ -21,7 +21,7 @@ class VisitForm
     {
         return $schema
             ->components([
-                Section::make('Informasi Kunjungan')
+                Section::make('Informasi Inspeksi')
                     ->schema([
                         Select::make('tower_id')
                             ->label('Pilih Menara')
@@ -72,12 +72,12 @@ class VisitForm
                             ->required(),
 
                         TextInput::make('observation_distance')
-                            ->label('Jarak Pengamatan (m)')
+                            ->label('Jarak Pengamatan (meter)')
                             ->numeric()
                             ->required(),
 
                         Placeholder::make('visited_by')
-                            ->label('Visited By')
+                            ->label('Pemeriksa')
                             ->content(fn ($record) => $record?->creator?->name ?? '-'),
                     ])->columns(2),
 
@@ -151,7 +151,7 @@ class VisitForm
                             ])
                             ->inline()
                             ->required(),
-                            
+
                         Radio::make('joint_maintenance')
                             ->label('Sambungan Rangka Utama (Pemeliharaan)')
                             ->options([
@@ -190,6 +190,7 @@ class VisitForm
                             ->options([
                                 'not_connected_well' => 'Tidak Tersambung Baik Pada tiang utama',
                                 'connected_well' => 'Tersambung Baik Pada tiang utama',
+                                'no_panel_structure' => 'Tidak Ada Struktur Panel',
                             ])
                             ->inline()
                             ->required(),
@@ -198,7 +199,7 @@ class VisitForm
                             ->label('Bidang Panel')
                             ->options([
                                 'loose' => 'Ada yang Lepas',
-                                'no_loose' => 'Tidak Ada Lepas',
+                                'no_loose' => 'Tidak Ada yang Lepas',
                                 'no_panel' => 'Tidak Ada Bidang Panel',
                             ])
                             ->inline()
@@ -238,7 +239,7 @@ class VisitForm
                             ->required(),
                     ]),
 
-                Section::make('Foto Lapangan')
+                Section::make('Foto Inspeksi')
                     ->schema([
                         Repeater::make('images')
                             ->relationship('images')
@@ -247,6 +248,8 @@ class VisitForm
                                 FileUpload::make('image_path')
                                     ->label('Foto')
                                     ->image()
+                                    ->imagePreviewHeight('220')
+                                    ->panelLayout('integrated')
                                     ->maxSize(10240)
                                     ->imageResizeTargetWidth('1280')
                                     ->imageResizeTargetHeight('1280')
@@ -254,6 +257,7 @@ class VisitForm
                                     ->directory('visit-images')
                                     ->visibility('public')
                                     ->openable()
+                                    ->downloadable()
                                     ->saveUploadedFileUsing(fn ($file) =>
                                         \App\Services\ImageCompressor::compressAndStore($file, 'visit-images')
                                     )

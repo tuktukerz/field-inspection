@@ -22,9 +22,9 @@ class VisitResource extends Resource
     protected static ?string $model = Visit::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
-    protected static ?string $navigationLabel = 'Menara Visit';
-    protected static ?string $pluralLabel = 'Menara Visit';
-    protected static ?string $modelLabel = 'Menara Visit';
+    protected static ?string $navigationLabel = 'Inspeksi';
+    protected static ?string $pluralLabel = 'Inspeksi';
+    protected static ?string $modelLabel = 'Inspeksi';
     protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema

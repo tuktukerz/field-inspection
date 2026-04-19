@@ -10,6 +10,14 @@ class ListTowers extends ListRecords
 {
     protected static string $resource = TowerResource::class;
 
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'SIMTEL',
+            'Daftar Menara',
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [

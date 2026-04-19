@@ -21,7 +21,7 @@ class TowerForm
     {
         return $schema
             ->components([
-                Section::make('Informasi Dasar Tower')
+                Section::make('Informasi Dasar Menara')
                     ->schema([
                         TextInput::make('tower_id')
                             ->label('ID Tower')
@@ -41,6 +41,7 @@ class TowerForm
 
                         Select::make('kecamatan')
                             ->label('Kecamatan')
+                            ->placeholder('Pilih Kecamatan')
                             ->options(District::all()->pluck('name', 'name'))
                             ->searchable()
                             ->live()
@@ -49,7 +50,8 @@ class TowerForm
 
                         Select::make('kelurahan')
                             ->label('Kelurahan')
-                            ->options(fn (Get $get): array => 
+                            ->placeholder('Pilih Kelurahan')
+                            ->options(fn (Get $get): array =>
                                 SubDistrict::whereHas('district', fn ($query) => $query->where('name', $get('kecamatan')))
                                     ->pluck('name', 'name')
                                     ->toArray()

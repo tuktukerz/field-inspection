@@ -36,7 +36,7 @@ class TowersTable
                     ->searchable(),
 
                 TextColumn::make('visits_count')
-                    ->label('Visit')
+                    ->label('Inspeksi')
                     ->counts('visits')
                     ->badge()
                     ->color('success'),

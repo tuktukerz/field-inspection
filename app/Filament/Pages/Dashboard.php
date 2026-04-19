@@ -14,7 +14,7 @@ class Dashboard extends BaseDashboard
     public function getBreadcrumbs(): array
     {
         return [
-            'Inspeksi Lapangan',
+            'SIMTEL',
             'Beranda',
         ];
     }

@@ -26,16 +26,16 @@ class ExportReport extends Page implements HasForms
     use InteractsWithForms;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-chart-bar';
-    protected static ?string $navigationLabel = 'Laporan';
+    protected static ?string $navigationLabel = 'Laporan HPL';
     protected static ?int $navigationSort = 5;
-    protected static ?string $title = 'Laporan Data Inspeksi Lapangan';
+    protected static ?string $title = 'Laporan HPL';
     protected string $view = 'filament.pages.export-report';
 
     public function getBreadcrumbs(): array
     {
         return [
-            'Inspeksi Lapangan',
-            'Laporan',
+            'SIMTEL',
+            'Laporan HPL',
         ];
     }
 
@@ -108,7 +108,7 @@ class ExportReport extends Page implements HasForms
                             ->searchable()
                             ->placeholder('Semua Menara'),
                         Select::make('user_id')
-                            ->label('Pemeriksa (Visited By)')
+                            ->label('Pemeriksa')
                             ->options(User::all()->pluck('name', 'id'))
                             ->searchable()
                             ->placeholder('Semua Pemeriksa'),

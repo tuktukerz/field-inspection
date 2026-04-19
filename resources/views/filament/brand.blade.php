@@ -23,15 +23,30 @@
             <line x1="7" y1="32" x2="29" y2="32" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
     </div>
-    <span
-        class="fi-custom-brand-text"
-        style="
-            font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.015em;
-        "
-    >
-        Inspeksi Lapangan
-    </span>
+    <div style="display: inline-flex; flex-direction: column; line-height: 1.1;">
+        <span
+            class="fi-custom-brand-text"
+            style="
+                font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+                font-size: 1rem;
+                font-weight: 700;
+                letter-spacing: -0.015em;
+            "
+        >
+            SIMTEL
+        </span>
+        <span
+            class="fi-custom-brand-subtext"
+            style="
+                font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+                font-size: 0.625rem;
+                font-weight: 500;
+                color: #64748b;
+                letter-spacing: 0.01em;
+                margin-top: 2px;
+            "
+        >
+            Sistem Informasi Menara Telekomunikasi
+        </span>
+    </div>
 </div>

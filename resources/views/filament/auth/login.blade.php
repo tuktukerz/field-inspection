@@ -60,7 +60,7 @@
         }
         .fi-custom-login-title {
             font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-            font-size: 1.375rem;
+            font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: -0.02em;
             color: #0f172a;
@@ -69,6 +69,18 @@
         .dark .fi-custom-login-title {
             color: #f4f4f5;
         }
+        .fi-custom-login-subtitle {
+            font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #64748b;
+            margin: -0.375rem 0 0 0;
+            text-align: center;
+            letter-spacing: 0.01em;
+        }
+        .dark .fi-custom-login-subtitle {
+            color: #a1a1aa;
+        }
         .fi-custom-login-divider {
             height: 1px;
             background: #f1f5f9;
@@ -76,6 +88,20 @@
         }
         .dark .fi-custom-login-divider {
             background: #27272a;
+        }
+        .fi-custom-login-copyright {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+            font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+            font-size: 0.6875rem;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .dark .fi-custom-login-copyright {
+            border-top-color: #27272a;
+            color: #71717a;
         }
     </style>
 
@@ -92,10 +118,15 @@
                 <line x1="7" y1="32" x2="29" y2="32" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
         </div>
-        <h1 class="fi-custom-login-title">Inspeksi Lapangan</h1>
+        <h1 class="fi-custom-login-title">SIMTEL</h1>
+        <p class="fi-custom-login-subtitle">Sistem Informasi Menara Telekomunikasi</p>
     </div>
 
     <div class="fi-custom-login-divider"></div>
 
     {{ $this->content }}
+
+    <div class="fi-custom-login-copyright">
+        &copy; 2026 Dinas Cipta Karya, Tata Ruang dan Pertahanan
+    </div>
 </div>
