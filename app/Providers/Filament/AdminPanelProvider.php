@@ -253,18 +253,6 @@ class AdminPanelProvider extends PanelProvider
                         cursor: zoom-in;
                     }
 
-                    /* Ensure widgets in the same row match height */
-                    .fi-dashboard-page .fi-wi,
-                    .fi-dashboard-page .fi-wi > div,
-                    .fi-dashboard-page .fi-wi-table-ctn {
-                        height: 100%;
-                    }
-                    .fi-dashboard-page .fi-ta-ctn {
-                        height: 100%;
-                        display: flex;
-                        flex-direction: column;
-                    }
-
                     /* Pretty table styling */
                     .fi-ta thead tr {
                         background: linear-gradient(180deg, #f8fafc, #f1f5f9) !important;
