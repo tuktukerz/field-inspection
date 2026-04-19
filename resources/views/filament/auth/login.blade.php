@@ -127,6 +127,6 @@
     {{ $this->content }}
 
     <div class="fi-custom-login-copyright">
-        &copy; 2026 Dinas Cipta Karya, Tata Ruang dan Pertahanan Provinsi DKI Jakarta
+        &copy; 2026 Dinas Cipta Karya, Tata Ruang dan Pertanahan Provinsi DKI Jakarta
     </div>
 </div>

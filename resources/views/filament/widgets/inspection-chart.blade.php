@@ -59,12 +59,6 @@
             border: 1px solid #eef2f7;
             box-shadow: 0 1px 2px rgba(15,23,42,0.04);
             overflow: hidden;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .chart-card .chart-body {
-            flex: 1;
         }
         .dark .chart-card {
             background: #26262b;
