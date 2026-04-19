@@ -130,8 +130,8 @@
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0.875rem;
-            margin-bottom: 1.25rem;
+            gap: 0.625rem;
+            margin-bottom: 1rem;
         }
         @media (min-width: 768px) {
             .stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.125rem; }
@@ -145,13 +145,20 @@
             background:
                 radial-gradient(140% 80% at 100% 0%, var(--stat-tint) 0%, transparent 55%),
                 #ffffff;
-            border-radius: 1.125rem;
-            padding: 1.25rem 1.3rem 1.1rem;
+            border-radius: 0.875rem;
+            padding: 0.875rem 0.875rem 0.75rem;
             border: 1px solid #eef2f7;
             box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
             overflow: hidden;
             transition: transform 0.25s cubic-bezier(.2,.8,.2,1), box-shadow 0.25s ease, border-color 0.25s ease;
             animation: statFadeUp 0.55s cubic-bezier(.2,.8,.2,1) both;
+            min-width: 0;
+        }
+        @media (min-width: 768px) {
+            .stat-card {
+                border-radius: 1.125rem;
+                padding: 1.25rem 1.3rem 1.1rem;
+            }
         }
         .stat-card::before {
             content: "";
@@ -320,6 +327,56 @@
             border-radius: 9999px;
             background: linear-gradient(135deg, var(--stat-c1), var(--stat-c2));
             animation: statPulse 2.2s ease-in-out infinite;
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 640px) {
+            .stat-top {
+                gap: 0.625rem;
+                align-items: flex-start;
+            }
+            .stat-ring {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+            .stat-ring .track,
+            .stat-ring circle[stroke] {
+                stroke-width: 10;
+            }
+            .stat-ring-inner svg {
+                width: 1rem;
+                height: 1rem;
+            }
+            .stat-icon-badge {
+                width: 2.25rem; height: 2.25rem;
+                border-radius: 0.625rem;
+            }
+            .stat-icon-badge svg {
+                width: 1.1rem; height: 1.1rem;
+            }
+            .stat-label {
+                font-size: 0.625rem;
+                letter-spacing: 0.04em;
+                line-height: 1.25;
+                white-space: normal;
+                overflow-wrap: break-word;
+                word-break: break-word;
+            }
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            .stat-foot {
+                margin-top: 0.625rem;
+                font-size: 0.625rem;
+                flex-wrap: wrap;
+            }
+            .stat-pill {
+                padding: 0.125rem 0.4375rem;
+                font-size: 0.625rem;
+            }
+            .stat-card::before {
+                background-size: 12px 12px;
+            }
         }
     </style>
 
