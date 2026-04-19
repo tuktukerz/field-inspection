@@ -8,23 +8,56 @@ use App\Models\Tower;
 class MapDashboard extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
-    protected static ?string $navigationLabel = 'Peta Persebaran Data';
+    protected static ?string $navigationLabel = 'Peta Menara';
     protected static ?int $navigationSort = 2;
 
     public function getTitle(): string
     {
-        return 'Peta Persebaran Data';
+        return 'Peta Menara';
     }
 
     public function getBreadcrumbs(): array
     {
         return [
-            'Inspeksi Lapangan',
-            'Peta Persebaran Data',
+            'SIMTEL',
+            'Peta Menara',
         ];
     }
 
     protected string $view = 'filament.pages.map-dashboard';
+
+    public function getStats(): array
+    {
+        $towers = Tower::with(['visits' => fn ($q) => $q->latest()->limit(1)])->get();
+
+        $total = $towers->count();
+        $terpantau = 0;
+        $perluPemeriksaan = 0;
+        $prioritasTinggi = 0;
+
+        foreach ($towers as $tower) {
+            $latest = $tower->visits->first();
+            if (! $latest) {
+                $prioritasTinggi++;
+                continue;
+            }
+            $days = \Carbon\Carbon::parse($latest->inspection_date)->diffInDays(now());
+            if ($days <= 30) {
+                $terpantau++;
+            } elseif ($days <= 90) {
+                $perluPemeriksaan++;
+            } else {
+                $prioritasTinggi++;
+            }
+        }
+
+        return [
+            'total' => $total,
+            'terpantau' => $terpantau,
+            'perlu_pemeriksaan' => $perluPemeriksaan,
+            'prioritas_tinggi' => $prioritasTinggi,
+        ];
+    }
 
     public function getMapData()
     {

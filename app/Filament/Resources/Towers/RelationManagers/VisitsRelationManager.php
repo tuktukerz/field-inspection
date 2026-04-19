@@ -53,6 +53,7 @@ class VisitsRelationManager extends RelationManager
                 ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
-            ]);
+            ])
+            ;
     }
 }

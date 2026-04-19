@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -19,27 +20,26 @@ class UsersTable
                     ->rowIndex(),
 
                 TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label('Alamat Email')
                     ->searchable(),
                 TextColumn::make('role')
+                    ->label('Peran')
                     ->badge()
                     ->colors([
                         'danger' => 'super_admin', // merah
                         'success' => 'admin',      // hijau
                     ]),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('role')
+                    ->label('Peran')
+                    ->options([
+                        'super_admin' => 'Super Admin',
+                        'admin' => 'Admin',
+                    ]),
             ])
             ->recordActions([
                 EditAction::make(),
@@ -50,7 +50,7 @@ class UsersTable
                 ]),
             ])
             ->striped()
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('name', 'asc')
             ->paginationPageOptions([10, 25, 50, 100])
             ->emptyStateHeading('Belum ada pengguna')
             ->emptyStateDescription('Mulai dengan menambahkan pengguna pertama untuk mengelola sistem.')

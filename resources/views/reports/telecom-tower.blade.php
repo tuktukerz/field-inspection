@@ -144,7 +144,7 @@
                         </td>
 
                         {{-- Kondisi Bidang Menara --}}
-                        <td>{{ $item->panel_structure === 'connected_well' ? 'Tersambung Baik Pada tiang utama' : 'Tidak Tersambung Baik Pada tiang utama' }}</td>
+                        <td>{{ $item->panel_structure === 'connected_well' ? 'Tersambung Baik Pada tiang utama' : ($item->panel_structure === 'not_connected_well' ? 'Tidak Tersambung Baik Pada tiang utama' : 'Tidak Ada Struktur Panel') }}</td>
                         <td>{{ $item->panel_status === 'no_loose' ? 'Tidak Ada yang lepas' : ($item->panel_status === 'loose' ? 'Ada yang lepas' : 'Tidak Ada Bidang Panel') }}</td>
                         <td>{{ $item->lamp_frame === 'connected_well' ? 'Tersambung Baik' : ($item->lamp_frame === 'not_connected_well' ? 'Tidak Tersambung Baik' : 'Tidak Ada Lampu') }}</td>
 

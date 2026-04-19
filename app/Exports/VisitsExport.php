@@ -93,7 +93,12 @@ class VisitsExport implements FromQuery, WithHeadings, WithMapping
             $this->formatLabel($item->bolt_position),
             $this->formatFrame($item),
             $this->formatJoint($item),
-            $item->panel_structure === 'connected_well' ? 'Tersambung Baik Pada tiang utama' : 'Tidak Tersambung Baik Pada tiang utama',
+            match ($item->panel_structure) {
+                'connected_well' => 'Tersambung Baik Pada tiang utama',
+                'not_connected_well' => 'Tidak Tersambung Baik Pada tiang utama',
+                'no_panel_structure' => 'Tidak Ada Struktur Panel',
+                default => '-',
+            },
             $this->formatPanelStatus($item->panel_status),
             $this->formatLampFrame($item->lamp_frame),
             ($item->construction_feasibility === 'dangerous' ? 'Berpotensi Membahayakan' : 'Tidak Berpotensi Membahayakan') . ', ' . ($item->follow_up_action === 'enforcement_proposal' ? 'Segera Usul Penertiban' : 'Monitor Berkala'),

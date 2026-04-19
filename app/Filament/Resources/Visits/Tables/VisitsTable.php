@@ -44,7 +44,7 @@ class VisitsTable
             ])
             ->filters([
                 SelectFilter::make('kecamatan')
-                    ->label('Filter per Kecamatan')
+                    ->label('Kecamatan')
                     ->options(\App\Models\Tower::query()->distinct()->whereNotNull('kecamatan')->pluck('kecamatan', 'kecamatan'))
                     ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data) {
                         if (! $data['value']) {
@@ -61,7 +61,7 @@ class VisitsTable
                     ->hidden(fn ($livewire) => $livewire instanceof RelationManager),
 
                 SelectFilter::make('created_by')
-                    ->label('Filter by Visitor')
+                    ->label('Pemeriksa')
                     ->relationship('creator', 'name')
                     ->searchable()
                     ->preload(),

@@ -18,8 +18,8 @@ class ManageVisits extends ManageRecords
     public function getBreadcrumbs(): array
     {
         return [
-            ...$this->getResourceBreadcrumbs(),
-            'Daftar',
+            'SIMTEL',
+            'Inspeksi',
         ];
     }
 
@@ -27,7 +27,10 @@ class ManageVisits extends ManageRecords
     {
         return [
             CreateAction::make()
-                ->label('Tambah Riwayat Visit'),
+                ->label('Tambah Inspeksi')
+                ->modalHeading('Tambah Data Inspeksi Menara Telekomunikasi')
+                ->modalSubmitActionLabel('Simpan')
+                ->createAnother(false),
         ];
     }
 }
