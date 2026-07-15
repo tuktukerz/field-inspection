@@ -24,6 +24,10 @@ class VisitsRelationManager extends RelationManager
 {
     protected static string $relationship = 'visits';
 
+    protected static ?string $title = 'Inspeksi';
+
+    protected static ?string $modelLabel = 'Inspeksi';
+
     public function isReadOnly(): bool
     {
         return false;
@@ -39,7 +43,7 @@ class VisitsRelationManager extends RelationManager
         return VisitsTable::configure($table)
             ->headerActions([
                 CreateAction::make()
-                    ->label('Tambah Riwayat Visit')
+                    ->label('Tambah Riwayat Inspeksi')
                     ->button()
                     ->color('primary')
                     ->icon('heroicon-o-plus'),

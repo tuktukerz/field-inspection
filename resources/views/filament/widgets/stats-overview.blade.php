@@ -220,7 +220,7 @@
                 </div>
             </div>
             <div class="beranda-foot">
-                <span>Seluruh riwayat inspeksi</span>
+                <span>Seluruh riwayat inspeksi dalam 1 tahun terakhir</span>
                 <span class="beranda-dot"></span>
             </div>
         </div>

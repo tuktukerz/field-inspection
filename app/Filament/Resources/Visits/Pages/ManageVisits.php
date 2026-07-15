@@ -28,7 +28,7 @@ class ManageVisits extends ManageRecords
         return [
             CreateAction::make()
                 ->label('Tambah Inspeksi')
-                ->modalHeading('Tambah Data Inspeksi Menara Telekomunikasi')
+                ->modalHeading('Buat Inspeksi')
                 ->modalSubmitActionLabel('Simpan')
                 ->createAnother(false),
         ];
