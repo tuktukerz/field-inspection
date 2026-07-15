@@ -22,7 +22,7 @@ class TowersTable
                     ->sortable(),
 
                 TextColumn::make('location_name')
-                    ->label('Nama Lokasi')
+                    ->label('Lokasi Menara')
                     ->description(fn($record) => $record->location_detail)
                     ->searchable()
                     ->sortable(),

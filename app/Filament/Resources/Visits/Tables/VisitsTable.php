@@ -24,7 +24,7 @@ class VisitsTable
                     ->hidden(fn ($livewire) => $livewire instanceof RelationManager),
 
                 TextColumn::make('tower.location_name')
-                    ->label('Alamat Detail')
+                    ->label('Lokasi Menara')
                     ->description(fn ($record) => $record?->tower?->location_detail)
                     ->searchable(['location_name', 'location_detail'])
                     ->wrap(),
@@ -69,8 +69,8 @@ class VisitsTable
             ->striped()
             ->defaultSort('inspection_date', 'desc')
             ->paginationPageOptions([10, 25, 50, 100])
-            ->emptyStateHeading('Belum ada riwayat visit')
-            ->emptyStateDescription('Tambahkan riwayat visit pertama untuk mulai mencatat inspeksi menara.')
+            ->emptyStateHeading('Belum ada riwayat inspeksi')
+            ->emptyStateDescription('Tambahkan riwayat inspeksi pertama untuk mulai mencatat inspeksi menara.')
             ->emptyStateIcon('heroicon-o-clipboard-document-check');
     }
 }

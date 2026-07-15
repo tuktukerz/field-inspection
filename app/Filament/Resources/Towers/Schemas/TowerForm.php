@@ -60,7 +60,7 @@ class TowerForm
                             ->required(),
                     ])->columns(2),
 
-                Section::make('Lokasi & Koordinat')
+                Section::make('Titik Koordinat')
                     ->schema([
                         Radio::make('location_mode')
                             ->label('Metode Input Lokasi')

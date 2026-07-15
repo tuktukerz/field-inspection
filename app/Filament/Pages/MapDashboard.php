@@ -44,7 +44,7 @@ class MapDashboard extends Page
             $days = \Carbon\Carbon::parse($latest->inspection_date)->diffInDays(now());
             if ($days <= 30) {
                 $terpantau++;
-            } elseif ($days <= 90) {
+            } elseif ($days <= 60) {
                 $perluPemeriksaan++;
             } else {
                 $prioritasTinggi++;
@@ -78,7 +78,7 @@ class MapDashboard extends Page
                     
                     if ($daysSinceVisit <= 30) {
                         $statusColor = 'green';
-                    } elseif ($daysSinceVisit <= 90) {
+                    } elseif ($daysSinceVisit <= 60) {
                         $statusColor = 'yellow';
                     }
                 }

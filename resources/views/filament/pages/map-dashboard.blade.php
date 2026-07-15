@@ -386,7 +386,7 @@
             <div class="stat-top">
                 <div class="stat-icon-badge">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M5 21V9l7-6 7 6v12"/><path d="M9 21v-6h6v6"/>
+                        <path d="M9.348 14.651a3.75 3.75 0 0 1 0-5.303m5.304 0a3.75 3.75 0 0 1 0 5.303m-7.425 2.122a6.75 6.75 0 0 1 0-9.546m9.546 0a6.75 6.75 0 0 1 0 9.546M5.106 18.894c-3.808-3.808-3.808-9.981 0-13.789m13.788 0c3.808 3.808 3.808 9.981 0 13.788M12 12h.008v.008H12V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
                     </svg>
                 </div>
                 <div class="stat-main">
@@ -425,7 +425,7 @@
                 </div>
             </div>
             <div class="stat-foot">
-                <span>&lt; 30 hari</span>
+                <span>&le; 30 hari</span>
                 <span class="stat-pill">{{ $pctTerpantau }}%</span>
             </div>
         </div>
@@ -455,7 +455,7 @@
                 </div>
             </div>
             <div class="stat-foot">
-                <span>31 - 90 hari</span>
+                <span>31 - 60 hari</span>
                 <span class="stat-pill">{{ $pctPerlu }}%</span>
             </div>
         </div>
@@ -485,7 +485,7 @@
                 </div>
             </div>
             <div class="stat-foot">
-                <span>&gt; 90 hari</span>
+                <span>&gt; 60 hari</span>
                 <span class="stat-pill">{{ $pctPrioritas }}%</span>
             </div>
         </div>
@@ -500,15 +500,15 @@
             <h4 class="font-bold mb-2 text-gray-700 dark:text-gray-200">Status Inspeksi</h4>
             <div class="legend-item">
                 <div class="legend-color" style="background: #10b981;"></div>
-                <span class="text-gray-600 dark:text-gray-400">Terpantau (&lt; 30 hari)</span>
+                <span class="text-gray-600 dark:text-gray-400">Terpantau (&le; 30 hari)</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #facc15;"></div>
-                <span class="text-gray-600 dark:text-gray-400">Perlu Pemeriksaan (31 - 90 hari)</span>
+                <span class="text-gray-600 dark:text-gray-400">Perlu Pemeriksaan (31 - 60 hari)</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background: #ef4444;"></div>
-                <span class="text-gray-600 dark:text-gray-400">Prioritas Tinggi (&gt; 90 hari)</span>
+                <span class="text-gray-600 dark:text-gray-400">Prioritas Tinggi (&gt; 60 hari)</span>
             </div>
         </div>
     </div>
