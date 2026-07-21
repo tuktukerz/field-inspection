@@ -56,7 +56,7 @@
 <body>
     <div class="header">
         Laporan Hasil Pemeriksaan Lapangan (HPL) Visual Menara Telekomunikasi<br>
-        {{ $quarter }} Tahun {{ $year }}
+        {{ $periodLabel }}
     </div>
 
     <table>

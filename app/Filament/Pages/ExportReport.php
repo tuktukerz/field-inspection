@@ -181,21 +181,14 @@ class ExportReport extends Page implements HasForms
             return;
         }
 
-        $dateObj = Carbon::parse($startDate);
-        $triwulanNum = ceil($dateObj->month / 3);
-        $romans = [1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV'];
-        $quarterLabel = 'Triwulan ' . ($romans[$triwulanNum] ?? $triwulanNum);
-        $tahun = $dateObj->year;
+        $periodLabel = $this->resolvePeriodLabel($startDate, $endDate);
 
         $pdf = Pdf::loadView('reports.telecom-tower', [
             'inspections' => $visits,
-            'startDate' => $dateObj->isoFormat('D MMMM YYYY'),
-            'endDate' => Carbon::parse($endDate)->isoFormat('D MMMM YYYY'),
-            'triwulan' => $triwulanNum,
-            'tahun' => $tahun,
-            'quarter' => $quarterLabel,
-            'year' => $tahun,
-            'generatedAt' => now()->isoFormat('D MMMM YYYY, HH:mm'),
+            'startDate' => Carbon::parse($startDate)->locale('id')->isoFormat('D MMMM YYYY'),
+            'endDate' => Carbon::parse($endDate)->locale('id')->isoFormat('D MMMM YYYY'),
+            'periodLabel' => $periodLabel,
+            'generatedAt' => now()->locale('id')->isoFormat('D MMMM YYYY, HH:mm'),
             'generatedBy' => auth()->user()?->name ?? 'System',
         ])->setPaper('a4', 'landscape');
 
@@ -226,12 +219,54 @@ class ExportReport extends Page implements HasForms
         );
     }
 
-    private function getQuarterLabel($date)
+    /**
+     * Bangun label periode adaptif untuk header PDF berdasarkan rentang tanggal:
+     * - Setahun penuh (1 Jan - 31 Des)            => "Tahun 2026"
+     * - Tepat satu triwulan (mis. 1 Jul - 30 Sep) => "Triwulan III Tahun 2026"
+     * - Tepat satu bulan penuh (1 - akhir bulan)  => "Bulan Juli 2026"
+     * - Selain itu                                => "Periode 1 Februari s.d. 31 Mei 2026"
+     */
+    private function resolvePeriodLabel(string $startDate, string $endDate): string
     {
-        $month = Carbon::parse($date)->month;
-        if ($month <= 3) return 'Triwulan I';
-        if ($month <= 6) return 'Triwulan II';
-        if ($month <= 9) return 'Triwulan III';
-        return 'Triwulan IV';
+        $start = Carbon::parse($startDate)->locale('id');
+        $end = Carbon::parse($endDate)->locale('id');
+
+        // Setahun penuh: 1 Januari s.d. 31 Desember pada tahun yang sama
+        if (
+            $start->year === $end->year
+            && $start->isSameDay($start->copy()->startOfYear())
+            && $end->isSameDay($end->copy()->endOfYear())
+        ) {
+            return 'Tahun ' . $start->year;
+        }
+
+        // Tepat satu triwulan: mulai 1 Jan/Apr/Jul/Okt s.d. akhir bulan ke-3 kuartal
+        if (
+            $start->year === $end->year
+            && $start->day === 1
+            && in_array($start->month, [1, 4, 7, 10], true)
+            && $end->isSameDay($start->copy()->addMonths(2)->endOfMonth())
+        ) {
+            $romans = [1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV'];
+            $quarter = intdiv($start->month - 1, 3) + 1;
+            return 'Triwulan ' . $romans[$quarter] . ' Tahun ' . $start->year;
+        }
+
+        // Tepat satu bulan penuh: tanggal 1 s.d. akhir bulan yang sama
+        if (
+            $start->year === $end->year
+            && $start->month === $end->month
+            && $start->day === 1
+            && $end->isSameDay($start->copy()->endOfMonth())
+        ) {
+            return 'Bulan ' . $start->isoFormat('MMMM YYYY');
+        }
+
+        // Rentang custom: tampilkan periode apa adanya
+        if ($start->year === $end->year) {
+            return 'Periode ' . $start->isoFormat('D MMMM') . ' s.d. ' . $end->isoFormat('D MMMM YYYY');
+        }
+
+        return 'Periode ' . $start->isoFormat('D MMMM YYYY') . ' s.d. ' . $end->isoFormat('D MMMM YYYY');
     }
 }
