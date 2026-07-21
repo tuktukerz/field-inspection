@@ -697,7 +697,17 @@
                     </div>
                 `;
 
-                marker.bindPopup(popupContent, { maxWidth: 350 });
+                marker.bindPopup(popupContent, {
+                    maxWidth: 350,
+                    // Popup ini jauh lebih tinggi dari peta 400px di HP. Tanpa batas,
+                    // autoPan menggeser/zoom peta secara liar saat popup dibuka
+                    // (peta "loncat") dan bisa menutup popup. maxHeight bikin isinya
+                    // scroll & muat, jadi autoPan minim.
+                    maxHeight: 320,
+                    closeOnClick: false, // klik peta tidak menutup popup
+                    autoClose: false,    // buka marker lain tidak auto-menutup
+                    keepInView: true
+                });
 
                 // Di HP, satu tap bisa menghasilkan dua klik (klik asli + "ghost click").
                 // Perilaku default Leaflet meng-toggle popup, jadi klik ke-2 menutupnya
