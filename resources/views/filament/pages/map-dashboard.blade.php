@@ -24,6 +24,28 @@
             z-index: 400 !important;
         }
 
+        /* Tombol close popup: bikin jelas & gampang dipencet di HP
+           (sebelumnya nyaru dengan header berwarna card). */
+        .leaflet-popup-close-button {
+            width: 30px !important;
+            height: 30px !important;
+            top: 8px !important;
+            left: 8px !important;
+            right: auto !important;
+            font-size: 22px !important;
+            line-height: 28px !important;
+            text-align: center !important;
+            color: #111827 !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-radius: 50% !important;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3) !important;
+            z-index: 1000 !important;
+        }
+        .leaflet-popup-close-button:hover {
+            color: #ef4444 !important;
+            background: #fff !important;
+        }
+
         /* Custom Marker */
         .custom-marker {
             display: flex;
