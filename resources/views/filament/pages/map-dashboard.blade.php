@@ -698,6 +698,13 @@
                 `;
 
                 marker.bindPopup(popupContent, { maxWidth: 350 });
+
+                // Di HP, satu tap bisa menghasilkan dua klik (klik asli + "ghost click").
+                // Perilaku default Leaflet meng-toggle popup, jadi klik ke-2 menutupnya
+                // lagi (glitch auto-close). Ganti jadi klik marker = SELALU buka.
+                marker.off('click');
+                marker.on('click', function () { this.openPopup(); });
+
                 markers.addLayer(marker);
             });
 
