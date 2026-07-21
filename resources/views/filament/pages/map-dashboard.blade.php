@@ -1,9 +1,9 @@
 <x-filament::page>
 
     {{-- Leaflet CSS & Plugins --}}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- Custom CSS for Map Responsiveness, Layering, and Modal --}}
@@ -536,8 +536,8 @@
     </script>
 
     {{-- Script Dependencies --}}
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -552,7 +552,11 @@
 
             // INIT MAP
             const map = L.map('map', {
-                zoomControl: false 
+                zoomControl: false,
+                // Di HP, tap marker memicu ghost-click di peta yang otomatis
+                // menutup popup yang baru saja terbuka (glitch auto-close).
+                // Matikan agar popup hanya tertutup lewat tombol X / marker lain.
+                closePopupOnClick: false
             }).setView([-6.2, 106.8], 11);
 
             L.control.zoom({ position: 'topright' }).addTo(map);
@@ -673,8 +677,7 @@
                                         ${Number(item.latitude).toFixed(7)}, ${Number(item.longitude).toFixed(7)}
                                     </div>
                                     <a href="https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}" 
-                                       target="_blank" 
-                                       onclick="if(window.innerWidth < 768) { map.closePopup(); }"
+                                       target="_blank"
                                        style="display:flex; align-items:center; gap:4px; font-size:9px; color:#1e40af; text-decoration:none; background:white; padding:3px 8px; border-radius:20px; border:1px solid #bfdbfe; font-weight:700; transition: all 0.2s;">
                                         <svg xmlns="http://www.w3.org/2000/svg" style="width:10px; height:10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.447-.894L15 4m0 13V4m0 0L9 7" />
